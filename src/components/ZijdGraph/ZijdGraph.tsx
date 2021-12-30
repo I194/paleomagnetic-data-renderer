@@ -1,4 +1,6 @@
-import React, { FC } from "react";
+import React, { FC, useCallback, useEffect, useRef, useState } from "react";
+import { Box, boxesIntersect, useSelectionContainer } from 'react-drag-to-select';
+import MouseSelection from "../MouseSelection/MouseSelection";
 import styles from './ZijdGraph.module.scss';
 
 interface ICircle {
@@ -6,9 +8,10 @@ interface ICircle {
   y: number;
   r?: number;
   id: string;
+  selected?: boolean;
 }
 
-const Circle: FC<ICircle> = ({x, y, r, id}) => {
+const Circle: FC<ICircle> = ({x, y, r, id, selected=false}) => {
 
   const handleClick = () => {
     console.log('a');
@@ -24,46 +27,112 @@ const Circle: FC<ICircle> = ({x, y, r, id}) => {
   }
 
   return (
-    <circle 
-      cx={x} 
-      cy={y} 
-      r={r ? r : 4}
-      id={id}
-      style={{
-        fill: 'black', 
-        stroke: 'black',
-        cursor: 'pointer'
-      }} 
-      className={styles.dot}
-      onClick={handleClick}
-      onMouseOver={() => handleOver(id)}
-      onMouseOut={() => handleOut(id)}
-    />
+    <>
+      { selected ? 
+        <circle
+          cx={x} 
+          cy={y} 
+          r={r ? r + 2 : 6}
+          id={`${id}__selected`}
+          style={{
+            fill: 'purple', 
+            stroke: 'purple',
+            opacity: '50%',
+          }} 
+        />
+        : null
+      }
+      <circle 
+        cx={x} 
+        cy={y} 
+        r={r ? r : 4}
+        id={id}
+        style={{
+          fill: 'black', 
+          stroke: 'black',
+          cursor: 'pointer'
+        }} 
+        className={styles.dot}
+        onClick={handleClick}
+        onMouseOver={() => handleOver(id)}
+        onMouseOut={() => handleOut(id)}
+      />
+    </>
   )
 }
 
 const ZijdGraph: FC = () => {
 
-  const XYdata = [[20, 20], [25, 70], [50, 40], [39, 72], [110, 119], [118, 129], [134, 141], [150, 150]]
+  // const [selectionBox, setSelectionBox] = useState<Box>({left: 0, top: 0, width: 0, height: 0});
+  const [selectedIndexes, setSelectedIndexes] = useState<number[]>([]);
+  const selectableItems = useRef<Box[]>([]);
+
+  const XYdata = [[20, 20], [25, 70], [50, 40], [39, 72], [110, 119], [118, 129], [134, 141], [150, 150]];
+
+  useEffect(() => {
+    const elementsContainer = document.getElementById('zijd-graph-dots');
+    if (elementsContainer) {
+      Array.from(elementsContainer.childNodes).forEach((item) => {
+        //@ts-ignore
+        const { left, top, width, height } = item.getBoundingClientRect();
+        selectableItems.current.push({
+          left,
+          top,
+          width,
+          height,
+        });
+      });
+    }
+  }, []);
+  
+  const handleSelectionChange = useCallback(
+    (box: Box) => {
+      const indexesToSelect: number[] = [];
+
+      selectableItems.current.forEach((item, index) => {
+        if (boxesIntersect(box, item)) {
+          indexesToSelect.push(index % selectableItems.current.length);
+        }
+      });
+      
+      console.log(indexesToSelect)
+      setSelectedIndexes(indexesToSelect);
+    }, [selectableItems],
+  );
 
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="300px" id='mySVG'>
-      <line x1="150" y1="0" x2="150" y2="300" stroke="black" strokeWidth="2" />
-      <line x1="0" y1="150" x2="300" y2="150" stroke="black" strokeWidth="2" />
-      {/* 
-          Создавать маркеры черезе path нельзя, ибо тогда теряется почти весь их функционал
-          Добавить слушатель можно только к конкретному элементу по типу <circle />
-          Потому лучше отрисовывать отдельно каждый <circle /> через map массива координат
-          Однако hover всё равно работать не будет и потому лучше использовать onMouseOver
-          Как раз при этом достигается условие zero-css (я его только что сам придумал)
-      */}
-      <path 
-        d="M20,20 L25,70 L50,40 L39,72, L110,119, L118,129, L134,141, L150,150" 
-        fill="none" 
-        stroke=" black" 
-      />
-      {XYdata.map((xy, iter) => <Circle x={xy[0]} y={xy[1]} id={`dot${iter}`}/>)}
-    </svg>
+    <>
+      <MouseSelection onSelectionChange={handleSelectionChange} />
+      <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="300px" id='zijd-graph'>
+        <line x1="150" y1="0" x2="150" y2="300" stroke="black" strokeWidth="2" />
+        <line x1="0" y1="150" x2="300" y2="150" stroke="black" strokeWidth="2" />
+        {/* 
+            Создавать маркеры черезе path нельзя, ибо тогда теряется почти весь их функционал
+            Добавить слушатель можно только к конкретному элементу по типу <circle />
+            Потому лучше отрисовывать отдельно каждый <circle /> через map массива координат
+            Однако hover всё равно работать не будет и потому лучше использовать onMouseOver
+            Как раз при этом достигается условие zero-css (я его только что сам придумал)
+        */}
+        <path 
+          d="M20,20 L25,70 L50,40 L39,72, L110,119, L118,129, L134,141, L150,150" 
+          fill="none" 
+          stroke=" black" 
+        />
+        <g id='zijd-graph-dots'>
+          {XYdata.map((xy, iter) => {
+            return (
+              <Circle 
+                x={xy[0]} 
+                y={xy[1]} 
+                id={`dot${iter}`} 
+                key={iter} 
+                selected={selectedIndexes.includes(iter)}
+              />
+            )
+          })}
+        </g>
+      </svg>
+    </>
   )
 }
 
