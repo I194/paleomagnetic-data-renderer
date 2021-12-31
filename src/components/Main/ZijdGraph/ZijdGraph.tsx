@@ -1,100 +1,7 @@
 import React, { FC, useCallback, useEffect, useRef, useState } from "react";
 import { Box, boxesIntersect } from 'react-drag-to-select';
-import MouseSelection from "../MouseSelection/MouseSelection";
-import Tooltip, { ITooltip } from "../Tooltip/Tooltip";
+import { MouseSelection, Dot } from "../../Sub";
 import styles from './ZijdGraph.module.scss';
-
-interface ICircle {
-  x: number;
-  y: number;
-  r?: number;
-  id: string;
-  selected?: boolean;
-  showText?: boolean;
-}
-
-const Circle: FC<ICircle> = ({x, y, r, id, selected, showText}) => {
-
-  const [tooltip, setTooltip] = useState<ITooltip>();
-
-  const handleClick = () => {
-    console.log('a');
-    alert('Нежнее!')
-  }
-
-  const handleOver = (id: string) => {
-    const dot = document.getElementById(id);
-    if (dot) {
-      dot.style.setProperty('fill', 'orange');
-      setTooltip({
-        isVisible: true,
-        position: {
-          left: dot.getBoundingClientRect().left,
-          top: dot.getBoundingClientRect().top
-        },
-        dot: {
-          id,
-          x,
-          y,
-        }
-      })
-    }
-  }
-
-  const handleOut = (id: string) => {
-    document.getElementById(id)?.style.setProperty('fill', 'black');
-    setTooltip(undefined);
-  }
-
-  return (
-    <>
-      {
-        showText ?
-        <text 
-          x={x}
-          y={y - 6}
-        >
-          {id}
-        </text>
-        : null
-      }
-      { selected ? 
-        <circle
-          cx={x} 
-          cy={y} 
-          r={r ? r + 2 : 6}
-          id={`${id}__selected`}
-          style={{
-            fill: 'purple', 
-            stroke: 'purple',
-            opacity: '50%',
-          }} 
-        />
-        : null
-      }
-      <circle 
-        cx={x} 
-        cy={y} 
-        r={r ? r : 4}
-        id={id}
-        style={{
-          fill: 'black', 
-          stroke: 'black',
-          cursor: 'pointer'
-        }} 
-        className={styles.dot}
-        onClick={handleClick}
-        onMouseOver={() => handleOver(id)}
-        onMouseOut={() => handleOut(id)}
-      />
-      {
-        tooltip ? 
-        <Tooltip position={tooltip.position} isVisible={tooltip.isVisible} dot={tooltip.dot}/> 
-        : null
-      }
-    </>
-  )
-}
 
 const ZijdGraph: FC = () => {
 
@@ -135,7 +42,6 @@ const ZijdGraph: FC = () => {
     }, [selectableItems],
   );
 
-
   return (
     <>
       <MouseSelection onSelectionChange={handleSelectionChange} />
@@ -157,7 +63,7 @@ const ZijdGraph: FC = () => {
         <g id='zijd-graph-dots'>
           {XYdata.map((xy, iter) => {
             return (
-              <Circle 
+              <Dot 
                 x={xy[0]} 
                 y={xy[1]} 
                 id={`dot${iter}`} 
