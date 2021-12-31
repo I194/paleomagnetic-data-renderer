@@ -42,10 +42,17 @@ const ZijdGraph: FC = () => {
     }, [selectableItems],
   );
 
+  const handleDoubleClick = (event: { detail: any; }) => {
+    const timesClicked = event.detail;
+    if (timesClicked === 2) {
+      setSelectedIndexes([]);
+    }
+  }
+
   return (
     <>
       <MouseSelection onSelectionChange={handleSelectionChange} />
-      <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="300px" id='zijd-graph'>
+      <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="300px" id='zijd-graph' onClick={handleDoubleClick}>
         <line x1="150" y1="0" x2="150" y2="300" stroke="black" strokeWidth="2" />
         <line x1="0" y1="150" x2="300" y2="150" stroke="black" strokeWidth="2" />
         {/* 
