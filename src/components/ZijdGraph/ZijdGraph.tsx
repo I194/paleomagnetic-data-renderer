@@ -1,6 +1,7 @@
 import React, { FC, useCallback, useEffect, useRef, useState } from "react";
-import { Box, boxesIntersect, useSelectionContainer } from 'react-drag-to-select';
+import { Box, boxesIntersect } from 'react-drag-to-select';
 import MouseSelection from "../MouseSelection/MouseSelection";
+import Tooltip, { ITooltip } from "../Tooltip/Tooltip";
 import styles from './ZijdGraph.module.scss';
 
 interface ICircle {
@@ -9,9 +10,12 @@ interface ICircle {
   r?: number;
   id: string;
   selected?: boolean;
+  showText?: boolean;
 }
 
-const Circle: FC<ICircle> = ({x, y, r, id, selected=false}) => {
+const Circle: FC<ICircle> = ({x, y, r, id, selected, showText}) => {
+
+  const [tooltip, setTooltip] = useState<ITooltip>();
 
   const handleClick = () => {
     console.log('a');
@@ -19,15 +23,41 @@ const Circle: FC<ICircle> = ({x, y, r, id, selected=false}) => {
   }
 
   const handleOver = (id: string) => {
-    document.getElementById(id)?.style.setProperty('fill', 'orange');
+    const dot = document.getElementById(id);
+    if (dot) {
+      dot.style.setProperty('fill', 'orange');
+      setTooltip({
+        isVisible: true,
+        position: {
+          left: dot.getBoundingClientRect().left,
+          top: dot.getBoundingClientRect().top
+        },
+        dot: {
+          id,
+          x,
+          y,
+        }
+      })
+    }
   }
 
   const handleOut = (id: string) => {
     document.getElementById(id)?.style.setProperty('fill', 'black');
+    setTooltip(undefined);
   }
 
   return (
     <>
+      {
+        showText ?
+        <text 
+          x={x}
+          y={y - 6}
+        >
+          {id}
+        </text>
+        : null
+      }
       { selected ? 
         <circle
           cx={x} 
@@ -57,13 +87,18 @@ const Circle: FC<ICircle> = ({x, y, r, id, selected=false}) => {
         onMouseOver={() => handleOver(id)}
         onMouseOut={() => handleOut(id)}
       />
+      {
+        tooltip ? 
+        <Tooltip position={tooltip.position} isVisible={tooltip.isVisible} dot={tooltip.dot}/> 
+        : null
+      }
     </>
   )
 }
 
 const ZijdGraph: FC = () => {
 
-  // const [selectionBox, setSelectionBox] = useState<Box>({left: 0, top: 0, width: 0, height: 0});
+  const [showAnnotations, setShowAnnotations] = useState(false);
   const [selectedIndexes, setSelectedIndexes] = useState<number[]>([]);
   const selectableItems = useRef<Box[]>([]);
 
@@ -94,11 +129,12 @@ const ZijdGraph: FC = () => {
           indexesToSelect.push(index % selectableItems.current.length);
         }
       });
-      
+
       console.log(indexesToSelect)
       setSelectedIndexes(indexesToSelect);
     }, [selectableItems],
   );
+
 
   return (
     <>
@@ -127,11 +163,13 @@ const ZijdGraph: FC = () => {
                 id={`dot${iter}`} 
                 key={iter} 
                 selected={selectedIndexes.includes(iter)}
+                showText={showAnnotations}
               />
             )
           })}
         </g>
       </svg>
+      <button id='showAnnotations' onClick={() => setShowAnnotations(!showAnnotations)} style={{marginTop: '24px'}}>Show annotations</button>
     </>
   )
 }
