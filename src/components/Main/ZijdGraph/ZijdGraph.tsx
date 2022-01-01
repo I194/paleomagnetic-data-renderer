@@ -1,7 +1,7 @@
 import React, { FC, useCallback, useEffect, useRef, useState } from "react";
 import { Box, boxesIntersect } from 'react-drag-to-select';
 import { createStraightPath } from "../../../utils/createPath";
-import { MouseSelection, Dot } from "../../Sub";
+import { MouseSelection, Dot, GraphSymbols } from "../../Sub";
 import styles from './ZijdGraph.module.scss';
 
 interface ITicksX {
@@ -195,6 +195,7 @@ const ZijdGraph: FC = () => {
             })}
           </g>
         </g>
+        <GraphSymbols title1="Horizontal" id1="horizontal-data" title2="Vertical" id2="vertical-data"/>
       </svg>
       <button id='showAnnotations' onClick={() => setShowAnnotations(!showAnnotations)} style={{marginTop: '24px'}}>Show annotations</button>
     </>
