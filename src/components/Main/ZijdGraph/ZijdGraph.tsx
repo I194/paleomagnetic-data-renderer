@@ -70,15 +70,22 @@ const ZijdGraph: FC = () => {
   const [selectedIndexes, setSelectedIndexes] = useState<number[]>([]);
   const selectableItems = useRef<Box[]>([]);
 
-  const XYdata: Array<[number, number]> = [[20, 20], [25, 70], [50, 40], [39, 72], [110, 119], [118, 129], [134, 141], [150, 150]];
+  const horizontalProjectionData: Array<[number, number]> = [
+    [20, 20], [25, 70], [50, 40], [39, 72], [110, 119], [118, 129], [134, 141], [150, 150]
+  ]; // 'x' is Y, 'y' is X
+  const verticalProjectionData: Array<[number, number]> = [
+    [20, 170], [25, 190], [50, 210], [39, 132], [110, 158], [118, 169], [134, 149], [150, 150]
+  ]; // 'x' is Y, 'y' is Z
   const width = 300;
   const height = 300;
   const graphAreaMargin = 50;
 
   useEffect(() => {
-    const elementsContainer = document.getElementById('dots');
-    if (elementsContainer) {
-      Array.from(elementsContainer.childNodes).forEach((item) => {
+    const elementsContainerH = document.getElementById('h-dots');
+    const elementsContainerV = document.getElementById('v-dots');
+    if (elementsContainerH && elementsContainerV) {
+      const selectableNodes =  Array.from(elementsContainerH.childNodes).concat(Array.from(elementsContainerV.childNodes));
+      selectableNodes.forEach((item) => {
         //@ts-ignore
         const { left, top, width, height } = item.getBoundingClientRect();
         selectableItems.current.push({
@@ -97,11 +104,15 @@ const ZijdGraph: FC = () => {
 
       selectableItems.current.forEach((item, index) => {
         if (boxesIntersect(box, item)) {
-          indexesToSelect.push(index % selectableItems.current.length);
+          // тут берём остаток от деления на число точек поскольку иногда используемая
+          // для выбора элементов библиотека сбоит и аккумулирует точки
+          // например, было 16 точек в selectableItems.current, и после обновления страницы их стало 32, а потом 48 и т.д.
+          // делим selectableItems.current.length на 2 из-за особенностей диаграммы Зийдервельда -- "белые" и "чёрные" точки
+          // отражают одну и ту же физическую сущность, но просто в разных проекциях, потому и выбираться должны как одна точка
+          indexesToSelect.push(index % (selectableItems.current.length / 2));
         }
       });
 
-      console.log(indexesToSelect)
       setSelectedIndexes(indexesToSelect);
     }, [selectableItems],
   );
@@ -136,29 +147,54 @@ const ZijdGraph: FC = () => {
             Однако hover всё равно работать не будет и потому лучше использовать onMouseOver
             Как раз при этом достигается условие zero-css (я его только что сам придумал)
         */}
-        <g id='data' transform={`translate(${graphAreaMargin}, ${graphAreaMargin})`}>
+        <g id='horizontal-data' transform={`translate(${graphAreaMargin}, ${graphAreaMargin})`}>
           <path 
-            id='path'
-            d={createStraightPath(XYdata)}
+            id='h-path'
+            d={createStraightPath(horizontalProjectionData)}
             fill="none" 
-            stroke=" black" 
+            stroke="black" 
           />
-          <g id='dots'>
-            {XYdata.map((xy, iter) => {
+          <g id='h-dots'>
+            {horizontalProjectionData.map((xy, iter) => {
               return (
                 <Dot 
                   x={xy[0]} 
                   y={xy[1]} 
-                  id={`dot${iter}`} 
+                  id={`h-dot${iter}`} 
                   key={iter} 
                   selected={selectedIndexes.includes(iter)}
                   showText={showAnnotations}
+                  fillColor='black'
+                  strokeColor='black'
                 />
               )
             })}
           </g>
         </g>
-        
+        <g id='vertical-data' transform={`translate(${graphAreaMargin}, ${graphAreaMargin})`}>
+          <path 
+            id='v-path'
+            d={createStraightPath(verticalProjectionData)}
+            fill="none"
+            stroke="black" 
+          />
+          <g id='v-dots'>
+            {verticalProjectionData.map((xy, iter) => {
+              return (
+                <Dot 
+                  x={xy[0]} 
+                  y={xy[1]} 
+                  id={`v-dot${iter}`} 
+                  key={iter} 
+                  selected={selectedIndexes.includes(iter)}
+                  showText={showAnnotations}
+                  fillColor='white'
+                  strokeColor='black'
+                />
+              )
+            })}
+          </g>
+        </g>
       </svg>
       <button id='showAnnotations' onClick={() => setShowAnnotations(!showAnnotations)} style={{marginTop: '24px'}}>Show annotations</button>
     </>

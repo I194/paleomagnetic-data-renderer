@@ -10,8 +10,8 @@ interface IDot {
   id: string;
   selected?: boolean;
   showText?: boolean;
-  fillColor?: string;
-  strokeColor?: string;
+  fillColor: string;
+  strokeColor: string;
 }
 
 const Dot: FC<IDot> = ({x, y, r, id, selected, showText, fillColor, strokeColor}) => {
@@ -43,7 +43,7 @@ const Dot: FC<IDot> = ({x, y, r, id, selected, showText, fillColor, strokeColor}
   }
 
   const handleOut = (id: string) => {
-    document.getElementById(id)?.style.setProperty('fill', 'black');
+    document.getElementById(id)?.style.setProperty('fill', fillColor);
     setTooltipData(undefined);
   }
 
