@@ -12,7 +12,7 @@ const TicksX: FC<ITicksX> = ({ axisWidth, positionY }) => {
   const positionsX = []
   for (let position = 0; position <= axisWidth; position += axisWidth / 10) positionsX.push(position);
   return (
-    <g id='zijd-ticks-x'>
+    <g id='ticks-x'>
       {
         positionsX.map((positionX, iter) => {
           return (
@@ -23,7 +23,7 @@ const TicksX: FC<ITicksX> = ({ axisWidth, positionY }) => {
               x2={positionX}
               y2={positionY + 5}
               stroke="black"
-              strokeWidth={2}
+              strokeWidth={1}
               key={iter}
             />
           )
@@ -42,7 +42,7 @@ const TicksY: FC<ITicksY> = ({ axisWidth, positionX }) => {
   const positionsY = []
   for (let position = 0; position <= axisWidth; position += axisWidth / 10) positionsY.push(position);
   return (
-    <g id='zijd-ticks-y'>
+    <g id='ticks-y'>
       {
         positionsY.map((positionY, iter) => {
           return (
@@ -53,7 +53,7 @@ const TicksY: FC<ITicksY> = ({ axisWidth, positionX }) => {
               x2={positionX + 5}
               y2={positionY}
               stroke="black"
-              strokeWidth={2}
+              strokeWidth={1}
               key={iter}
             />
           )
@@ -72,9 +72,10 @@ const ZijdGraph: FC = () => {
   const XYdata = [[20, 20], [25, 70], [50, 40], [39, 72], [110, 119], [118, 129], [134, 141], [150, 150]];
   const width = 300;
   const height = 300;
+  const graphAreaMargin = 50;
 
   useEffect(() => {
-    const elementsContainer = document.getElementById('zijd-graph-dots');
+    const elementsContainer = document.getElementById('dots');
     if (elementsContainer) {
       Array.from(elementsContainer.childNodes).forEach((item) => {
         //@ts-ignore
@@ -104,7 +105,7 @@ const ZijdGraph: FC = () => {
     }, [selectableItems],
   );
 
-  const handleDoubleClick = (event: { detail: any; }) => {
+  const handleDoubleClick = (event: any) => {
     const timesClicked = event.detail;
     if (timesClicked === 2) {
       setSelectedIndexes([]);
@@ -114,15 +115,17 @@ const ZijdGraph: FC = () => {
   return (
     <>
       <MouseSelection onSelectionChange={handleSelectionChange} />
-      <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="300px" id='zijd-graph' onClick={handleDoubleClick}>
-        <g id="axes">
-          <g id="zijd-x-axis">
-            <line id="zijd-x" x1={0} y1={height/2} x2={width} y2={height/2} stroke="black" strokeWidth="2" />
+      <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="400px" height="400px" id='zijd-graph' onClick={handleDoubleClick}>
+        <g id="axes" transform={`translate(${graphAreaMargin}, ${graphAreaMargin})`}>
+          <g id="x-axis">
+            <line id="x-line" x1={0} y1={height/2} x2={width} y2={height/2} stroke="black" strokeWidth="1" />
             <TicksX axisWidth={width} positionY={height/2} />
+            <text id="x-name" x={width + 10} y={height/2 + 4}>N, N</text>
           </g>
-          <g id="zijd-y-axis">
-            <line id="zijd-y" x1={width/2} y1={0} x2={width/2} y2={height} stroke="black" strokeWidth="2" />
+          <g id="y-axis">
+            <line id="y-line" x1={width/2} y1={0} x2={width/2} y2={height} stroke="black" strokeWidth="1" />
             <TicksY axisWidth={height} positionX={width/2} />
+            <text id="y-name" x={width/2 - 20} y={0 - 10}>W, UP</text>
           </g>
         </g>
         {/* 
@@ -132,25 +135,29 @@ const ZijdGraph: FC = () => {
             Однако hover всё равно работать не будет и потому лучше использовать onMouseOver
             Как раз при этом достигается условие zero-css (я его только что сам придумал)
         */}
-        <path 
-          d="M20,20 L25,70 L50,40 L39,72, L110,119, L118,129, L134,141, L150,150" 
-          fill="none" 
-          stroke=" black" 
-        />
-        <g id='zijd-graph-dots'>
-          {XYdata.map((xy, iter) => {
-            return (
-              <Dot 
-                x={xy[0]} 
-                y={xy[1]} 
-                id={`dot${iter}`} 
-                key={iter} 
-                selected={selectedIndexes.includes(iter)}
-                showText={showAnnotations}
-              />
-            )
-          })}
+        <g id='data' transform={`translate(${graphAreaMargin}, ${graphAreaMargin})`}>
+          <path 
+            id='path'
+            d="M20,20 L25,70 L50,40 L39,72, L110,119, L118,129, L134,141, L150,150" 
+            fill="none" 
+            stroke=" black" 
+          />
+          <g id='dots'>
+            {XYdata.map((xy, iter) => {
+              return (
+                <Dot 
+                  x={xy[0]} 
+                  y={xy[1]} 
+                  id={`dot${iter}`} 
+                  key={iter} 
+                  selected={selectedIndexes.includes(iter)}
+                  showText={showAnnotations}
+                />
+              )
+            })}
+          </g>
         </g>
+        
       </svg>
       <button id='showAnnotations' onClick={() => setShowAnnotations(!showAnnotations)} style={{marginTop: '24px'}}>Show annotations</button>
     </>
