@@ -9,19 +9,15 @@ interface IDot {
   r?: number;
   id: string;
   selected?: boolean;
+  onClick: any;
   showText?: boolean;
   fillColor: string;
   strokeColor: string;
 }
 
-const Dot: FC<IDot> = ({x, y, r, id, selected, showText, fillColor, strokeColor}) => {
+const Dot: FC<IDot> = ({x, y, r, id, selected, onClick, showText, fillColor, strokeColor}) => {
 
   const [tooltipData, setTooltipData] = useState<ITooltip>();
-
-  const handleClick = () => {
-    console.log('a');
-    alert('Нежнее!')
-  }
 
   const handleOver = (id: string) => {
     const dot = document.getElementById(id);
@@ -43,8 +39,11 @@ const Dot: FC<IDot> = ({x, y, r, id, selected, showText, fillColor, strokeColor}
   }
 
   const handleOut = (id: string) => {
-    document.getElementById(id)?.style.setProperty('fill', fillColor);
-    setTooltipData(undefined);
+    const dot = document.getElementById(id);
+    if (dot) {
+      setTooltipData(undefined);
+      dot.style.setProperty('fill', fillColor);
+    }
   }
 
   return (
@@ -80,12 +79,12 @@ const Dot: FC<IDot> = ({x, y, r, id, selected, showText, fillColor, strokeColor}
         r={r ? r : 4}
         id={id}
         style={{
-          fill: fillColor ? fillColor : 'black', 
-          stroke: strokeColor ? strokeColor : 'black',
+          fill: fillColor, 
+          stroke: strokeColor,
           cursor: 'pointer'
         }} 
         className={styles.dot}
-        onClick={handleClick}
+        onClick={() => onClick(+id.split('-')[2])}
         onMouseOver={() => handleOver(id)}
         onMouseOut={() => handleOut(id)}
       />

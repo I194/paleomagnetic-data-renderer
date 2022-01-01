@@ -124,6 +124,19 @@ const ZijdGraph: FC = () => {
     }
   }
 
+  const handleDotClick = (index: number) => {
+    const selectedIndexesUpdated = Array.from(selectedIndexes);
+    if (selectedIndexes.includes(index)) {
+      selectedIndexesUpdated.splice(
+        selectedIndexesUpdated.findIndex((selectedIndex) => selectedIndex === index),
+        1
+      );
+    } else {
+      selectedIndexesUpdated.push(index);
+    }
+    setSelectedIndexes(selectedIndexesUpdated);
+  }
+
   return (
     <>
       <MouseSelection onSelectionChange={handleSelectionChange} />
@@ -160,12 +173,13 @@ const ZijdGraph: FC = () => {
                 <Dot 
                   x={xy[0]} 
                   y={xy[1]} 
-                  id={`h-dot${iter}`} 
+                  id={`h-dot-${iter}`} 
                   key={iter} 
                   selected={selectedIndexes.includes(iter)}
                   showText={showAnnotations}
                   fillColor='black'
                   strokeColor='black'
+                  onClick={handleDotClick}
                 />
               )
             })}
@@ -184,12 +198,13 @@ const ZijdGraph: FC = () => {
                 <Dot 
                   x={xy[0]} 
                   y={xy[1]} 
-                  id={`v-dot${iter}`} 
+                  id={`v-dot-${iter}`} 
                   key={iter} 
                   selected={selectedIndexes.includes(iter)}
                   showText={showAnnotations}
                   fillColor='white'
                   strokeColor='black'
+                  onClick={handleDotClick}
                 />
               )
             })}
