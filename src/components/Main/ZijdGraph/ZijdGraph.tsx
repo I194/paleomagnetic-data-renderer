@@ -1,5 +1,6 @@
 import React, { FC, useCallback, useEffect, useRef, useState } from "react";
 import { Box, boxesIntersect } from 'react-drag-to-select';
+import { createStraightPath } from "../../../utils/createPath";
 import { MouseSelection, Dot } from "../../Sub";
 import styles from './ZijdGraph.module.scss';
 
@@ -69,7 +70,7 @@ const ZijdGraph: FC = () => {
   const [selectedIndexes, setSelectedIndexes] = useState<number[]>([]);
   const selectableItems = useRef<Box[]>([]);
 
-  const XYdata = [[20, 20], [25, 70], [50, 40], [39, 72], [110, 119], [118, 129], [134, 141], [150, 150]];
+  const XYdata: Array<[number, number]> = [[20, 20], [25, 70], [50, 40], [39, 72], [110, 119], [118, 129], [134, 141], [150, 150]];
   const width = 300;
   const height = 300;
   const graphAreaMargin = 50;
@@ -138,7 +139,7 @@ const ZijdGraph: FC = () => {
         <g id='data' transform={`translate(${graphAreaMargin}, ${graphAreaMargin})`}>
           <path 
             id='path'
-            d="M20,20 L25,70 L50,40 L39,72, L110,119, L118,129, L134,141, L150,150" 
+            d={createStraightPath(XYdata)}
             fill="none" 
             stroke=" black" 
           />
