@@ -1,7 +1,7 @@
 import React, { FC, useCallback, useEffect, useRef, useState } from "react";
 import { Box, boxesIntersect } from 'react-drag-to-select';
 import { createStraightPath } from "../../../utils/createPath";
-import { MouseSelection, Dot, GraphSymbols } from "../../Sub";
+import { MouseSelection, Dot, GraphSymbols, Unit } from "../../Sub";
 import styles from './ZijdGraph.module.scss';
 
 interface ITicksX {
@@ -65,6 +65,11 @@ const TicksY: FC<ITicksY> = ({ axisWidth, positionX }) => {
 }
 
 const ZijdGraph: FC = () => {
+
+  // ToDo: 
+  // 1. scale (масштаб, можно прям как в final.pdf - Unit= xxxE+yy A/m)
+  // 2. добавлять аннотацию при нажатии на точку
+  // 3. менять viewBox в зависимости от размера группы data (horizontal-data + vertical-data)
 
   const [showAnnotations, setShowAnnotations] = useState(false);
   const [selectedIndexes, setSelectedIndexes] = useState<number[]>([]);
@@ -211,6 +216,7 @@ const ZijdGraph: FC = () => {
           </g>
         </g>
         <GraphSymbols title1="Horizontal" id1="horizontal-data" title2="Vertical" id2="vertical-data"/>
+        <Unit label={`${(height/10).toExponential(2)} A/m`} viewHeight={height+graphAreaMargin*2}/>
       </svg>
       <button id='showAnnotations' onClick={() => setShowAnnotations(!showAnnotations)} style={{marginTop: '24px'}}>Show annotations</button>
     </>
