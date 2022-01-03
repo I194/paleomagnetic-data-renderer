@@ -69,11 +69,13 @@ interface IGraphSymbols {
   id1: string;
   title2: string;
   id2: string;
+  viewWidth: number;
+  viewHeight: number;
 }
 
-const GraphSymbols: FC<IGraphSymbols> = ({title1, id1, title2, id2}) => {
+const GraphSymbols: FC<IGraphSymbols> = ({title1, id1, title2, id2, viewWidth, viewHeight}) => {
   return (
-    <g id='graph-symbols'>
+    <g id='graph-symbols' transform={`translate(${20},${viewHeight - 45})`}>
       <SymbolRow title={title1} sourceId={id1} fill='black' x={10} y={10}/>
       <SymbolRow title={title2} sourceId={id2} fill='white' x={10} y={30}/>
     </g>

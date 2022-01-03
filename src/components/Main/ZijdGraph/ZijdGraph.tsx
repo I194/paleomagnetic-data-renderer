@@ -84,6 +84,8 @@ const ZijdGraph: FC = () => {
   const width = 300;
   const height = 300;
   const graphAreaMargin = 50;
+  const viewWidth = width + graphAreaMargin * 2;
+  const viewHeight = height + graphAreaMargin * 2;
 
   useEffect(() => {
     const elementsContainerH = document.getElementById('h-dots');
@@ -145,7 +147,7 @@ const ZijdGraph: FC = () => {
   return (
     <>
       <MouseSelection onSelectionChange={handleSelectionChange} />
-      <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="400px" height="400px" id='zijd-graph' onClick={handleDoubleClick}>
+      <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width={viewWidth} height={viewHeight} id='zijd-graph' onClick={handleDoubleClick}>
         <g id="axes" transform={`translate(${graphAreaMargin}, ${graphAreaMargin})`}>
           <g id="x-axis">
             <line id="x-line" x1={0} y1={height/2} x2={width} y2={height/2} stroke="black" strokeWidth="1" />
@@ -215,10 +217,23 @@ const ZijdGraph: FC = () => {
             })}
           </g>
         </g>
-        <GraphSymbols title1="Horizontal" id1="horizontal-data" title2="Vertical" id2="vertical-data"/>
-        <Unit label={`${(height/10).toExponential(2)} A/m`} viewHeight={height+graphAreaMargin*2}/>
+        <GraphSymbols 
+          title1="Horizontal" id1="horizontal-data" 
+          title2="Vertical" id2="vertical-data" 
+          viewHeight={viewHeight} viewWidth={viewWidth}
+        />
+        <Unit 
+          label={`${(height/10).toExponential(2)} A/m`} 
+          viewHeight={viewHeight} viewWidth={viewWidth}
+        />
       </svg>
-      <button id='showAnnotations' onClick={() => setShowAnnotations(!showAnnotations)} style={{marginTop: '24px'}}>Show annotations</button>
+      <button 
+        id='showAnnotations' 
+        onClick={() => setShowAnnotations(!showAnnotations)} 
+        style={{marginTop: '24px'}}
+      >
+        Toggle all annotations (on/off)
+      </button>
     </>
   )
 }

@@ -49,7 +49,7 @@ const Dot: FC<IDot> = ({x, y, r, id, selected, onClick, showText, fillColor, str
   return (
     <g>
       {
-        showText ?
+        showText || selected ?
         <text 
           id={`${id}__annotation`}
           x={x}
