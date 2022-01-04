@@ -84,7 +84,7 @@ const Dot: FC<IDot> = ({x, y, r, id, selected, onClick, showText, fillColor, str
           cursor: 'pointer'
         }} 
         className={styles.dot}
-        onClick={() => onClick(+id.split('-')[2])}
+        onClick={() => onClick(+id.split('-')[id.split('-').length - 1])}
         onMouseOver={() => handleOver(id)}
         onMouseOut={() => handleOut(id)}
       />

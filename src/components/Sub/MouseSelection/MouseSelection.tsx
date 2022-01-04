@@ -7,12 +7,15 @@ import { UseSelectionContainerParams } from 'react-drag-to-select/dist/hooks/use
 export interface MouseSelectionProps {
   onSelectionChange: OnSelectionChange;
   // onSelectionEnd: any//() => void;
+  eventsElement?: HTMLElement | Window | null;
 }
 
-const MouseSelection: FC<MouseSelectionProps> = ({ onSelectionChange }) => {
+const MouseSelection: FC<MouseSelectionProps> = ({ onSelectionChange, eventsElement }) => {
+  console.log(eventsElement)
 
   const { DragSelection } = useSelectionContainer({
-    eventsElement: document.getElementById('root'),
+    eventsElement: eventsElement ? eventsElement : document.getElementById('root'),
+    // eventsElement: document.getElementById('root'),
     onSelectionChange,
     onSelectionStart: () => {
       console.log('OnSelectionStart');
