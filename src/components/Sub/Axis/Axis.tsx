@@ -8,6 +8,7 @@ interface IAxis {
   zero: number;
   length: number;
   unit: number;
+  unitCount: number;
 }
 
 const Axis: FC<IAxis> = ({ 
@@ -16,7 +17,8 @@ const Axis: FC<IAxis> = ({
   name,
   zero, 
   length, 
-  unit
+  unit,
+  unitCount,
 }) => {
 
   const axisPos = {
@@ -58,7 +60,7 @@ const Axis: FC<IAxis> = ({
         start={0} 
         zero={zero} 
         interval={unit} 
-        count={10}
+        count={unitCount}
       />
       <text 
         id={`${graphId}-${type}-name`} 

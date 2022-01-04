@@ -4,7 +4,7 @@ import { SelectableGraph, GraphSymbols, Unit} from "../../Sub";
 import AxesAndData from "./AxesAndData";
 import styles from "./ZijdGraph.module.scss";
 
-const ZijdGraph: FC<IGraph> = ({ graphId }) => {
+const StereoGraph: FC<IGraph> = ({ graphId }) => {
 
   // ToDo: 
   // 1. менять viewBox в зависимости от размера группы data (horizontal-data + vertical-data) || STOPPED
@@ -27,17 +27,17 @@ const ZijdGraph: FC<IGraph> = ({ graphId }) => {
   const viewWidth = width + graphAreaMargin * 2;
   const viewHeight = height + graphAreaMargin * 2;
 
-  const unit = (width / 10);
-  const unitCount = 10;
+  const unit = (width / 18);
+  const unitCount = 18;
   const zeroX = (width / 2);
   const zeroY = (height / 2);
 
   // selectableNodes - все точки на графике 
   useEffect(() => {
-    const elementsContainerH = document.getElementById(`${graphId}-h-dots`);
-    const elementsContainerV = document.getElementById(`${graphId}-v-dots`);
-    if (elementsContainerH && elementsContainerV) {
-      const nodes = Array.from(elementsContainerH.childNodes).concat(Array.from(elementsContainerV.childNodes));
+    const elementsContainerU = document.getElementById(`${graphId}-u-dots`);
+    const elementsContainerD = document.getElementById(`${graphId}-d-dots`);
+    if (elementsContainerU && elementsContainerD) {
+      const nodes = Array.from(elementsContainerU.childNodes).concat(Array.from(elementsContainerD.childNodes));
       setSelectableNodes(nodes);
     }
   }, [graphId])
@@ -78,18 +78,18 @@ const ZijdGraph: FC<IGraph> = ({ graphId }) => {
             height={height}
             unit={unit}
             unitCount={unitCount}
-            horizontalProjectionData={horizontalProjectionData}
-            verticalProjectionData={verticalProjectionData}
+            upData={horizontalProjectionData}
+            downData={verticalProjectionData}
             selectedIndexes={selectedIndexes}
             handleDotClick={handleDotClick}
           />
           <GraphSymbols 
-            title1="Horizontal" id1={`${graphId}-h-data`} 
-            title2="Vertical" id2={`${graphId}-v-data`}
+            title1="Up" id1={`${graphId}-u-data`} 
+            title2="Down" id2={`${graphId}-d-data`}
             viewHeight={viewHeight} viewWidth={viewWidth}
           />
           <Unit 
-            label={`${(height/10).toExponential(2)} A/m`} 
+            label={`10 degrees`} 
             viewHeight={viewHeight} viewWidth={viewWidth}
           />
         </g>
@@ -98,4 +98,4 @@ const ZijdGraph: FC<IGraph> = ({ graphId }) => {
   )
 }
 
-export default ZijdGraph;
+export default StereoGraph;

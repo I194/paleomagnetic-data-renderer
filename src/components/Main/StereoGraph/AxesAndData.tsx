@@ -10,8 +10,8 @@ interface IAxesAndData {
   height: number;
   unit: number;
   unitCount: number;
-  horizontalProjectionData: Array<[number, number]>;
-  verticalProjectionData: Array<[number, number]>;
+  upData: Array<[number, number]>;
+  downData: Array<[number, number]>;
   selectedIndexes: Array<number>;
   handleDotClick: (index: number) => void;
 }
@@ -19,7 +19,7 @@ interface IAxesAndData {
 const AxesAndData: FC<IAxesAndData> = ({ 
   graphId, graphAreaMargin,
   zeroX, zeroY, width, height, unit, unitCount,
-  horizontalProjectionData, verticalProjectionData,
+  upData, downData,
   selectedIndexes,
   handleDotClick
 }) => {
@@ -29,10 +29,18 @@ const AxesAndData: FC<IAxesAndData> = ({
       transform={`translate(${graphAreaMargin}, ${graphAreaMargin})`}
     >
       <g id={`${graphId}-axes`}>
+        <circle 
+          cx={zeroX} 
+          cy={zeroY} 
+          r={width/2}
+          fill="transparent"
+          stroke="black"
+          strokeWidth={1}
+        />
         <Axis 
           graphId={graphId}
           type='x'
-          name='N, N'
+          name='E'
           zero={zeroY}
           length={width}
           unit={unit}
@@ -41,7 +49,7 @@ const AxesAndData: FC<IAxesAndData> = ({
         <Axis 
           graphId={graphId}
           type='y'
-          name='W, UP'
+          name='N'
           zero={zeroX}
           length={height}
           unit={unit}
@@ -58,16 +66,16 @@ const AxesAndData: FC<IAxesAndData> = ({
       <g id={`${graphId}-data`}>
         <Data 
           graphId={graphId}
-          type='h'
-          data={horizontalProjectionData}
+          type='u'
+          data={upData}
           selectedIndexes={selectedIndexes}
           handleDotClick={handleDotClick}
           dotFillColor='black'
         />
         <Data 
           graphId={graphId}
-          type='v'
-          data={verticalProjectionData}
+          type='d'
+          data={downData}
           selectedIndexes={selectedIndexes}
           handleDotClick={handleDotClick}
           dotFillColor='white'

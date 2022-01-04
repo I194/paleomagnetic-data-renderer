@@ -26,6 +26,7 @@ const SymbolRow: FC<ISymbolRow> = ({title, sourceId, fill, x, y}) => {
   }
 
   const handleOver = () => {
+    console.log('over')
     const source = document.getElementById(sourceId);
     if (source) {
       // console.log(source.childNodes[0])
