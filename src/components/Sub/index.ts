@@ -1,3 +1,4 @@
+import SelectableGraph from "./SelectableGraph/SelectableGraph";
 import MouseSelection from "./MouseSelection/MouseSelection";
 import Tooltip from "./Tooltip/Tooltip";
 import Dot from "./Dot/Dot";
@@ -9,6 +10,7 @@ import Data from "./Data/Data";
 import PanZoom from "./PanZoom/PanZoom";
 
 export { 
+  SelectableGraph,
   MouseSelection, 
   Tooltip, 
   Dot, 

@@ -9,13 +9,23 @@ interface IDot {
   r?: number;
   id: string;
   selected?: boolean;
-  onClick: any;
+  onClick: (index: number) => void;
   showText?: boolean;
   fillColor: string;
   strokeColor: string;
 }
 
-const Dot: FC<IDot> = ({x, y, r, id, selected, onClick, showText, fillColor, strokeColor}) => {
+const Dot: FC<IDot> = ({
+  x, 
+  y, 
+  r, 
+  id, 
+  onClick,
+  selected, 
+  showText, 
+  fillColor, 
+  strokeColor
+}) => {
 
   const [tooltipData, setTooltipData] = useState<ITooltip>();
 

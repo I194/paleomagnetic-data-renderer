@@ -19,6 +19,7 @@ const Data: FC<IData> = ({
   handleDotClick,
   dotFillColor
  }) => {
+  console.log(selectedIndexes);
   return (
     <g id={`${graphId}-${type}-data`}>
       <path 
@@ -28,14 +29,14 @@ const Data: FC<IData> = ({
         stroke="black" 
       />
       <g id={`${graphId}-${type}-dots`}>
-        {data.map((xy, iter) => {
+        {data.map((xy, index) => {
           return (
             <Dot 
               x={xy[0]} 
               y={xy[1]} 
-              id={`${graphId}-${type}-dot-${iter}`} 
-              key={iter} 
-              selected={selectedIndexes.includes(iter)}
+              id={`${graphId}-${type}-dot-${index}`} 
+              key={index} 
+              selected={selectedIndexes.includes(index)}
               fillColor={dotFillColor}
               strokeColor="black"
               onClick={handleDotClick}
