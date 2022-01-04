@@ -2,80 +2,17 @@ import React, { FC, useCallback, useEffect, useRef, useState } from "react";
 import { Box, boxesIntersect } from "react-drag-to-select";
 import { createStraightPath } from "../../../utils/createPath";
 import { IGraph } from "../../App/App";
-import { MouseSelection, Dot, GraphSymbols, Unit, PanZoom } from "../../Sub";
+import { MouseSelection, Dot, GraphSymbols, Unit, Ticks } from "../../Sub";
 import styles from "./ZijdGraph.module.scss";
-
-interface ITicksX {
-  axisWidth: number;
-  positionY: number;
-}
-
-const TicksX: FC<ITicksX> = ({ axisWidth, positionY }) => {
-  const positionsX = []
-  for (let position = 0; position <= axisWidth; position += axisWidth / 10) positionsX.push(position);
-  return (
-    <g id="ticks-x">
-      {
-        positionsX.map((positionX, iter) => {
-          return (
-            <line
-              id={`tick-x${iter}`}
-              x1={positionX}
-              y1={positionY - 5}
-              x2={positionX}
-              y2={positionY + 5}
-              stroke="black"
-              strokeWidth={1}
-              key={iter}
-            />
-          )
-        })
-      }
-    </g>
-  )
-}
-
-interface ITicksY {
-  axisWidth: number;
-  positionX: number;
-}
-
-const TicksY: FC<ITicksY> = ({ axisWidth, positionX }) => {
-  const positionsY = []
-  for (let position = 0; position <= axisWidth; position += axisWidth / 10) positionsY.push(position);
-  return (
-    <g id="ticks-y">
-      {
-        positionsY.map((positionY, iter) => {
-          return (
-            <line
-              id={`tick-y${iter}`}
-              x1={positionX - 5}
-              y1={positionY}
-              x2={positionX + 5}
-              y2={positionY}
-              stroke="black"
-              strokeWidth={1}
-              key={iter}
-            />
-          )
-        })
-      }
-    </g>
-  )
-}
 
 const ZijdGraph: FC<IGraph> = ({ graphId }) => {
 
   // ToDo: 
-  // 1. scale (масштаб, можно прям как в final.pdf - Unit= xxxE+yy A/m) || DONE
-  // 2. добавлять аннотацию при нажатии на точку || DONE
-  // 3. менять viewBox в зависимости от размера группы data (horizontal-data + vertical-data) || STOPPED
-  // 4. mouse-scroll
+  // 1. менять viewBox в зависимости от размера группы data (horizontal-data + vertical-data) || STOPPED
+  // 2. zoom&pan
 
-  const [showAnnotations, setShowAnnotations] = useState(false);
   const [selectedIndexes, setSelectedIndexes] = useState<number[]>([]);
-  const [scale, setScale] = useState(1);
+
   const selectableItems = useRef<Box[]>([]);
   const zijdGraph = useRef<any>();
 
@@ -87,19 +24,14 @@ const ZijdGraph: FC<IGraph> = ({ graphId }) => {
   ]; // "x" is Y, "y" is Z
   const width = 300;
   const height = 300;
+
   const graphAreaMargin = 50;
   const viewWidth = width + graphAreaMargin * 2;
   const viewHeight = height + graphAreaMargin * 2;
 
-  useEffect(() => {
-    if (zijdGraph.current) {
-      console.log('a')
-      zijdGraph.current.addEventListener('mousewheel', handleScroll, { passive: false });
-    }
-    // return (
-    //   zijdGraph.current.removeEventListener('wheel', handleScroll, { passive: false })
-    // )
-  }, [])
+  const unit = (width / 10);// * (viewWidth / width);
+  const zeroX = (width / 2);
+  const zeroY = (height / 2);
 
   useEffect(() => {
     selectableItems.current = [];
@@ -118,7 +50,7 @@ const ZijdGraph: FC<IGraph> = ({ graphId }) => {
         });
       });
     }
-  }, [scale]);
+  }, []);
   
   const handleSelectionChange = useCallback(
     (box: Box) => {
@@ -159,32 +91,6 @@ const ZijdGraph: FC<IGraph> = ({ graphId }) => {
     }
   }
 
-  const handleScroll = (event: any) => {
-    // console.log(event.deltaY * -0.01, event.deltaX);
-    console.log(scale)
-    event.preventDefault();
-
-    const delta = event.delta || event.wheelDelta;
-    const zoomOut = delta ? delta < 0 : event.originalEvent.deltaY > 0;
-    console.log(zoomOut, scale)
-    const currentScale = document.getElementById(`${graphId}-axes-and-data`)?.getAttribute('transform');
-    console.log('scale:', Number(currentScale?.match(/\d+/)));
-    
-    if (zoomOut) {
-      setScale(Math.max(1, scale - 0.05));
-    } else {
-      setScale(Math.min(4, scale + 0.5));
-      // console.log(scale)
-    }
-
-    // const tmpScale = event.deltaY * -0.01
-
-    // setScale(Math.min(Math.max(1, tmpScale), 4));
-    
-  }
-
-  console.log(scale)
-
   return (
     <>
       <MouseSelection onSelectionChange={handleSelectionChange} eventsElement={null}/>
@@ -195,24 +101,34 @@ const ZijdGraph: FC<IGraph> = ({ graphId }) => {
         height={viewHeight} 
         id={`${graphId}-graph`} 
         onClick={handleDoubleClick}
-        // onWheel={(event) => handleScroll(event)}
         ref={zijdGraph}
       > 
         <g>
           <g 
             id={`${graphId}-axes-and-data`}
-            transform={`scale(${scale})`}
           >
             <g id={`${graphId}-axes`} transform={`translate(${graphAreaMargin}, ${graphAreaMargin})`}>
               <g id={`${graphId}-x-axis`}>
-                <line id={`${graphId}-x-line`} x1={0} y1={height/2} x2={width} y2={height/2} stroke="black" strokeWidth="1" />
-                <TicksX axisWidth={width} positionY={height/2} />
-                <text id={`${graphId}-x-name`} x={width + 10} y={height/2 + 4}>N, N</text>
+                <line id={`${graphId}-x-line`} x1={0} y1={zeroY} x2={width} y2={zeroY} stroke="black" strokeWidth="1" />
+                <Ticks 
+                  axis="x" 
+                  start={0} 
+                  zero={zeroX} 
+                  interval={unit} 
+                  count={10}
+                />
+                <text id={`${graphId}-x-name`} x={width + 10} y={zeroY + 4}>N, N</text>
               </g>
               <g id={`${graphId}-y-axis`}>
-                <line id={`${graphId}-y-line`} x1={width/2} y1={0} x2={width/2} y2={height} stroke="black" strokeWidth="1" />
-                <TicksY axisWidth={height} positionX={width/2} />
-                <text id={`${graphId}-y-name`} x={width/2 - 20} y={0 - 10}>W, UP</text>
+                <line id={`${graphId}-y-line`} x1={zeroX} y1={0} x2={zeroX} y2={height} stroke="black" strokeWidth="1" />
+                <Ticks 
+                  axis="y" 
+                  start={0} 
+                  zero={zeroY} 
+                  interval={unit} 
+                  count={10}
+                />
+                <text id={`${graphId}-y-name`} x={zeroX - 20} y={0 - 10}>W, UP</text>
               </g>
             </g>
             {/* 
@@ -239,7 +155,6 @@ const ZijdGraph: FC<IGraph> = ({ graphId }) => {
                         id={`${graphId}-h-dot-${iter}`} 
                         key={iter} 
                         selected={selectedIndexes.includes(iter)}
-                        showText={showAnnotations}
                         fillColor="black"
                         strokeColor="black"
                         onClick={handleDotClick}
@@ -264,7 +179,6 @@ const ZijdGraph: FC<IGraph> = ({ graphId }) => {
                         id={`${graphId}-v-dot-${iter}`} 
                         key={iter} 
                         selected={selectedIndexes.includes(iter)}
-                        showText={showAnnotations}
                         fillColor="white"
                         strokeColor="black"
                         onClick={handleDotClick}
