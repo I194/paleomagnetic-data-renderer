@@ -2,8 +2,114 @@ import React, { FC, useCallback, useEffect, useRef, useState } from "react";
 import { Box, boxesIntersect } from "react-drag-to-select";
 import { createStraightPath } from "../../../utils/createPath";
 import { IGraph } from "../../App/App";
-import { MouseSelection, Dot, GraphSymbols, Unit, Ticks } from "../../Sub";
+import { MouseSelection, Dot, GraphSymbols, Unit, Axis } from "../../Sub";
 import styles from "./ZijdGraph.module.scss";
+
+
+interface IAxesAndData {
+  graphId: string;
+  graphAreaMargin: number;
+  zeroX: number;
+  zeroY: number;
+  width: number;
+  height: number;
+  unit: number;
+  horizontalProjectionData: Array<[number, number]>;
+  verticalProjectionData: Array<[number, number]>;
+  selectedIndexes: Array<number>;
+  handleDotClick: (index: number) => void;
+}
+
+const AxesAndData: FC<IAxesAndData> = ({ 
+  graphId, graphAreaMargin,
+  zeroX, zeroY, width, height, unit,
+  horizontalProjectionData, verticalProjectionData,
+  selectedIndexes,
+  handleDotClick
+}) => {
+  return (
+    <g 
+      id={`${graphId}-axes-and-data`}
+      transform={`translate(${graphAreaMargin}, ${graphAreaMargin})`}
+    >
+      <g id={`${graphId}-axes`}>
+        <Axis 
+          graphId={graphId}
+          type='x'
+          name='N, N'
+          zero={zeroY}
+          length={width}
+          unit={unit}
+        />
+        <Axis 
+          graphId={graphId}
+          type='y'
+          name='W, UP'
+          zero={zeroX}
+          length={height}
+          unit={unit}
+        />
+      </g>
+      {/* 
+          Создавать маркеры черезе path нельзя, ибо тогда теряется почти весь их функционал
+          Добавить слушатель можно только к конкретному элементу по типу <circle />
+          Потому лучше отрисовывать отдельно каждый <circle /> через map массива координат
+          Однако hover всё равно работать не будет и потому лучше использовать onMouseOver
+          Как раз при этом достигается условие zero-css (я его только что сам придумал)
+      */}
+      <g id={`${graphId}-data`}>
+        <g id={`${graphId}-horizontal-data`}>
+          <path 
+            id={`${graphId}-h-path`}
+            d={createStraightPath(horizontalProjectionData)}
+            fill="none" 
+            stroke="black" 
+          />
+          <g id={`${graphId}-h-dots`}>
+            {horizontalProjectionData.map((xy, iter) => {
+              return (
+                <Dot 
+                  x={xy[0]} 
+                  y={xy[1]} 
+                  id={`${graphId}-h-dot-${iter}`} 
+                  key={iter} 
+                  selected={selectedIndexes.includes(iter)}
+                  fillColor="black"
+                  strokeColor="black"
+                  onClick={handleDotClick}
+                />
+              )
+            })}
+          </g>
+        </g>
+        <g id={`${graphId}-vertical-data`}>
+          <path 
+            id={`${graphId}-v-path`}
+            d={createStraightPath(verticalProjectionData)}
+            fill="none"
+            stroke="black" 
+          />
+          <g id={`${graphId}-v-dots`}>
+            {verticalProjectionData.map((xy, iter) => {
+              return (
+                <Dot 
+                  x={xy[0]} 
+                  y={xy[1]} 
+                  id={`${graphId}-v-dot-${iter}`} 
+                  key={iter} 
+                  selected={selectedIndexes.includes(iter)}
+                  fillColor="white"
+                  strokeColor="black"
+                  onClick={handleDotClick}
+                />
+              )
+            })}
+          </g>
+        </g>
+      </g>
+    </g>
+  )
+}
 
 const ZijdGraph: FC<IGraph> = ({ graphId }) => {
 
@@ -104,91 +210,19 @@ const ZijdGraph: FC<IGraph> = ({ graphId }) => {
         ref={zijdGraph}
       > 
         <g>
-          <g 
-            id={`${graphId}-axes-and-data`}
-          >
-            <g id={`${graphId}-axes`} transform={`translate(${graphAreaMargin}, ${graphAreaMargin})`}>
-              <g id={`${graphId}-x-axis`}>
-                <line id={`${graphId}-x-line`} x1={0} y1={zeroY} x2={width} y2={zeroY} stroke="black" strokeWidth="1" />
-                <Ticks 
-                  axis="x" 
-                  start={0} 
-                  zero={zeroX} 
-                  interval={unit} 
-                  count={10}
-                />
-                <text id={`${graphId}-x-name`} x={width + 10} y={zeroY + 4}>N, N</text>
-              </g>
-              <g id={`${graphId}-y-axis`}>
-                <line id={`${graphId}-y-line`} x1={zeroX} y1={0} x2={zeroX} y2={height} stroke="black" strokeWidth="1" />
-                <Ticks 
-                  axis="y" 
-                  start={0} 
-                  zero={zeroY} 
-                  interval={unit} 
-                  count={10}
-                />
-                <text id={`${graphId}-y-name`} x={zeroX - 20} y={0 - 10}>W, UP</text>
-              </g>
-            </g>
-            {/* 
-                Создавать маркеры черезе path нельзя, ибо тогда теряется почти весь их функционал
-                Добавить слушатель можно только к конкретному элементу по типу <circle />
-                Потому лучше отрисовывать отдельно каждый <circle /> через map массива координат
-                Однако hover всё равно работать не будет и потому лучше использовать onMouseOver
-                Как раз при этом достигается условие zero-css (я его только что сам придумал)
-            */}
-            <g id={`${graphId}-data`}>
-              <g id={`${graphId}-horizontal-data`} transform={`translate(${graphAreaMargin}, ${graphAreaMargin})`}>
-                <path 
-                  id={`${graphId}-h-path`}
-                  d={createStraightPath(horizontalProjectionData)}
-                  fill="none" 
-                  stroke="black" 
-                />
-                <g id={`${graphId}-h-dots`}>
-                  {horizontalProjectionData.map((xy, iter) => {
-                    return (
-                      <Dot 
-                        x={xy[0]} 
-                        y={xy[1]} 
-                        id={`${graphId}-h-dot-${iter}`} 
-                        key={iter} 
-                        selected={selectedIndexes.includes(iter)}
-                        fillColor="black"
-                        strokeColor="black"
-                        onClick={handleDotClick}
-                      />
-                    )
-                  })}
-                </g>
-              </g>
-              <g id={`${graphId}-vertical-data`} transform={`translate(${graphAreaMargin}, ${graphAreaMargin})`}>
-                <path 
-                  id={`${graphId}-v-path`}
-                  d={createStraightPath(verticalProjectionData)}
-                  fill="none"
-                  stroke="black" 
-                />
-                <g id={`${graphId}-v-dots`}>
-                  {verticalProjectionData.map((xy, iter) => {
-                    return (
-                      <Dot 
-                        x={xy[0]} 
-                        y={xy[1]} 
-                        id={`${graphId}-v-dot-${iter}`} 
-                        key={iter} 
-                        selected={selectedIndexes.includes(iter)}
-                        fillColor="white"
-                        strokeColor="black"
-                        onClick={handleDotClick}
-                      />
-                    )
-                  })}
-                </g>
-              </g>
-            </g>
-          </g>
+          <AxesAndData 
+            graphId={graphId}
+            graphAreaMargin={graphAreaMargin}
+            zeroX={zeroX}
+            zeroY={zeroY}
+            width={width}
+            height={height}
+            unit={unit}
+            horizontalProjectionData={horizontalProjectionData}
+            verticalProjectionData={verticalProjectionData}
+            selectedIndexes={selectedIndexes}
+            handleDotClick={handleDotClick}
+          />
           <GraphSymbols 
             title1="Horizontal" id1="horizontal-data" 
             title2="Vertical" id2="vertical-data" 
