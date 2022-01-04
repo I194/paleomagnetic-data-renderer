@@ -2,7 +2,7 @@ import React, { FC, useCallback, useEffect, useRef, useState } from "react";
 import { Box, boxesIntersect } from "react-drag-to-select";
 import { createStraightPath } from "../../../utils/createPath";
 import { IGraph } from "../../App/App";
-import { MouseSelection, Dot, GraphSymbols, Unit, Axis } from "../../Sub";
+import { MouseSelection, Dot, GraphSymbols, Unit, Axis, Data } from "../../Sub";
 import styles from "./ZijdGraph.module.scss";
 
 
@@ -58,54 +58,22 @@ const AxesAndData: FC<IAxesAndData> = ({
           Как раз при этом достигается условие zero-css (я его только что сам придумал)
       */}
       <g id={`${graphId}-data`}>
-        <g id={`${graphId}-horizontal-data`}>
-          <path 
-            id={`${graphId}-h-path`}
-            d={createStraightPath(horizontalProjectionData)}
-            fill="none" 
-            stroke="black" 
-          />
-          <g id={`${graphId}-h-dots`}>
-            {horizontalProjectionData.map((xy, iter) => {
-              return (
-                <Dot 
-                  x={xy[0]} 
-                  y={xy[1]} 
-                  id={`${graphId}-h-dot-${iter}`} 
-                  key={iter} 
-                  selected={selectedIndexes.includes(iter)}
-                  fillColor="black"
-                  strokeColor="black"
-                  onClick={handleDotClick}
-                />
-              )
-            })}
-          </g>
-        </g>
-        <g id={`${graphId}-vertical-data`}>
-          <path 
-            id={`${graphId}-v-path`}
-            d={createStraightPath(verticalProjectionData)}
-            fill="none"
-            stroke="black" 
-          />
-          <g id={`${graphId}-v-dots`}>
-            {verticalProjectionData.map((xy, iter) => {
-              return (
-                <Dot 
-                  x={xy[0]} 
-                  y={xy[1]} 
-                  id={`${graphId}-v-dot-${iter}`} 
-                  key={iter} 
-                  selected={selectedIndexes.includes(iter)}
-                  fillColor="white"
-                  strokeColor="black"
-                  onClick={handleDotClick}
-                />
-              )
-            })}
-          </g>
-        </g>
+        <Data 
+          graphId={graphId}
+          type='h'
+          data={horizontalProjectionData}
+          selectedIndexes={selectedIndexes}
+          handleDotClick={handleDotClick}
+          dotFillColor='black'
+        />
+        <Data 
+          graphId={graphId}
+          type='v'
+          data={verticalProjectionData}
+          selectedIndexes={selectedIndexes}
+          handleDotClick={handleDotClick}
+          dotFillColor='white'
+        />
       </g>
     </g>
   )

@@ -5,6 +5,7 @@ import GraphSymbols from "./GraphSymbols/GraphSymbols";
 import Unit from "./Unit/Unit";
 import Ticks from "./Ticks/Ticks";
 import Axis from "./Axis/Axis";
+import Data from "./Data/Data";
 import PanZoom from "./PanZoom/PanZoom";
 
 export { 
@@ -15,4 +16,6 @@ export {
   Unit, 
   Ticks, 
   Axis,
-  PanZoom }; 
+  Data,
+  PanZoom
+ }; 
