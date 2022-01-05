@@ -15,10 +15,10 @@ const StereoGraph: FC<IGraph> = ({ graphId }) => {
 
   const horizontalProjectionData: Array<[number, number]> = [
     [20, 20], [25, 70], [50, 40], [39, 72], [110, 119], [118, 129], [134, 141], [150, 150]
-  ]; // "x" is Y, "y" is X
+  ]; // "x" is Inclination [-90, 90], "y" is Declination [0, 360]
   const verticalProjectionData: Array<[number, number]> = [
     [20, 170], [25, 190], [50, 210], [39, 132], [110, 158], [118, 169], [134, 149], [150, 150]
-  ]; // "x" is Y, "y" is Z
+  ]; // "x" is Inclination [-90, 90], "y" is Declination [0, 360]
 
   const width = 300;
   const height = 300;
@@ -57,6 +57,8 @@ const StereoGraph: FC<IGraph> = ({ graphId }) => {
     return null;
   };
 
+  console.log("nodes:", selectableNodes)
+
   return (
     <>
       <SelectableGraph
@@ -66,7 +68,7 @@ const StereoGraph: FC<IGraph> = ({ graphId }) => {
         selectableNodes={selectableNodes}
         selectedIndexes={selectedIndexes}
         setSelectedIndexes={setSelectedIndexes}
-        nodesDuplicated={true}
+        nodesDuplicated={false}
       >
         <g>
           <AxesAndData 
@@ -84,9 +86,10 @@ const StereoGraph: FC<IGraph> = ({ graphId }) => {
             handleDotClick={handleDotClick}
           />
           <GraphSymbols 
-            title1="Up" id1={`${graphId}-u-data`} 
-            title2="Down" id2={`${graphId}-d-data`}
+            title1="Down" id1={`${graphId}-d-data`} 
+            title2="Up" id2={`${graphId}-u-data`}
             viewHeight={viewHeight} viewWidth={viewWidth}
+            disabled={true}
           />
           <Unit 
             label={`10 degrees`} 

@@ -62,6 +62,7 @@ const SelectableGraph: FC<ISelectableGraph> = ({
           );
         }
       });
+      console.log(nodesDuplicated, indexesToSelect)
       setSelectedIndexes(indexesToSelect);
     }, [selectableNodesBoxes],
   );
