@@ -36,7 +36,7 @@ const StereoGraph: FC<IGraph> = ({ graphId }) => {
   const zeroY = (height / 2);
 
   const data: Array<[number, number]> = directionalData.map((di) => {
-    const xyz = dirToCartesian2D(di[0], di[1], width);
+    const xyz = dirToCartesian2D(di[0], di[1] - 90, width);
     // console.log(xyz.x, xyz.y)
     return [xyz.x, xyz.y];
   })

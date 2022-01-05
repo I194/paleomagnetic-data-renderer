@@ -69,7 +69,7 @@ const Dot: FC<IDot> = ({
         <text 
           id={`${id}__annotation`}
           x={x}
-          y={y - 6}
+          y={y - 8}
         >
           {id}
         </text>

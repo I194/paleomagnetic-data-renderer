@@ -75,7 +75,6 @@ const AxesAndData: FC<IAxesAndData> = ({
         transform={
           `
             translate(${150}, ${150})
-            rotate(-90)
           `
         }
       >

@@ -40,7 +40,9 @@ const Data: FC<IData> = ({
         fill="none" 
         stroke="black" 
       />
-      <g id={`${graphId}-${type}-dots`}>
+      <g 
+        id={`${graphId}-${type}-dots`}
+      >
         {data.map((xy, index) => {
           return (
             <Dot 
