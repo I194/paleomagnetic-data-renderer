@@ -39,7 +39,7 @@ const Axis: FC<IAxis> = ({
       y2: zero,
       text: {
         x: length + 10,
-        y: zero + 4,
+        y: zero + 5,
         xMirror: -20,
         yMirror: zero + 4
       }
