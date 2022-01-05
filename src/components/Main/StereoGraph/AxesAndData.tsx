@@ -30,10 +30,11 @@ const AxesAndData: FC<IAxesAndData> = ({
     >
       <g id={`${graphId}-axes`}>
         <circle 
+          id='stereo-circle-axis'
           cx={zeroX} 
           cy={zeroY} 
           r={width/2}
-          fill="transparent"
+          fill="none"
           stroke="black"
           strokeWidth={1}
         />
