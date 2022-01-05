@@ -6,6 +6,8 @@ import { ITooltip } from "../Tooltip/Tooltip";
 interface IDot {
   x: number;
   y: number;
+  inc?: number;
+  dec?: number;
   r?: number;
   id: string;
   selected?: boolean;
@@ -18,6 +20,8 @@ interface IDot {
 const Dot: FC<IDot> = ({
   x, 
   y, 
+  inc,
+  dec,
   r, 
   id, 
   onClick,
@@ -43,6 +47,8 @@ const Dot: FC<IDot> = ({
           id,
           x,
           y,
+          inc,
+          dec,
         }
       })
     }

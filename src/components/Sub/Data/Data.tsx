@@ -6,6 +6,7 @@ interface IData {
   graphId: string;
   type: string;
   data: Array<[number, number]>;
+  directionalData?: Array<[number, number]>;
   selectedIndexes: Array<number>;
   handleDotClick: (index: number) => void;
   dotFillColor: string;
@@ -17,6 +18,7 @@ const Data: FC<IData> = ({
   graphId,
   type,
   data,
+  directionalData,
   selectedIndexes,
   handleDotClick,
   dotFillColor,
@@ -44,6 +46,8 @@ const Data: FC<IData> = ({
             <Dot 
               x={xy[0]} 
               y={xy[1]} 
+              inc={directionalData ? directionalData[index][0] : undefined}
+              dec={directionalData ? directionalData[index][1] : undefined}
               id={`${graphId}-${type}-dot-${index}`} 
               key={index} 
               selected={selectedIndexes.includes(index)}

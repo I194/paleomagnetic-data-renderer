@@ -11,6 +11,7 @@ interface IAxesAndData {
   unit: number;
   unitCount: number;
   data: Array<[number, number]>;
+  directionalData: Array<[number, number]>;
   selectedIndexes: Array<number>;
   handleDotClick: (index: number) => void;
 }
@@ -18,7 +19,7 @@ interface IAxesAndData {
 const AxesAndData: FC<IAxesAndData> = ({ 
   graphId, graphAreaMargin,
   zeroX, zeroY, width, height, unit, unitCount,
-  data,
+  data, directionalData,
   selectedIndexes,
   handleDotClick
 }) => {
@@ -69,11 +70,20 @@ const AxesAndData: FC<IAxesAndData> = ({
           Однако hover всё равно работать не будет и потому лучше использовать onMouseOver
           Как раз при этом достигается условие zero-css (я его только что сам придумал)
       */}
-      <g id={`${graphId}-data`}>
+      <g 
+        id={`${graphId}-data`}
+        transform={
+          `
+            translate(${150}, ${150})
+            rotate(-90)
+          `
+        }
+      >
         <Data 
           graphId={graphId}
           type='all'
           data={data}
+          directionalData={directionalData}
           selectedIndexes={selectedIndexes}
           handleDotClick={handleDotClick}
           dotFillColor='black'

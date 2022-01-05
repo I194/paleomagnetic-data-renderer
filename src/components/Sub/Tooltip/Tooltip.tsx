@@ -25,6 +25,8 @@ const Tooltip: FC<ITooltip> = ({ position, isVisible, dot,  }) => {
             <span>id: {dot.id}</span>
             <span>x: {dot.x}</span>
             <span>y: {dot.y}</span>
+            <span>inc: {dot.inc}</span>
+            <span>dec: {dot.dec}</span>
           </div>
         }
       </>

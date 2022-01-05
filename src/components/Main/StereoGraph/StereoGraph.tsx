@@ -1,4 +1,5 @@
 import React, { FC, useEffect, useState } from "react";
+import { dirToCartesian2D } from "../../../utils/dirToCartesian";
 import { IGraph } from "../../App/App";
 import { SelectableGraph, GraphSymbols, Unit} from "../../Sub";
 import AxesAndData from "./AxesAndData";
@@ -13,9 +14,13 @@ const StereoGraph: FC<IGraph> = ({ graphId }) => {
   const [selectedIndexes, setSelectedIndexes] = useState<number[]>([]);
   const [selectableNodes, setSelectableNodes] = useState<ChildNode[]>([]);
 
-  const data: Array<[number, number]> = [
-    [20, 20], [25, 70], [50, 40], [39, 72], [110, 119], [118, 129], [134, 141], [150, 150],
-    [-20, 170], [-25, 190], [-50, 210], [-39, 132], [-110, 158], [-118, 169], [-134, 149], [-150, 150],
+  const directionalData: Array<[number, number]> = [
+    [0, 0], [10, 10], [20, 20], [30, 30], [40, 40], 
+    [50, 50], [60, 60], [70, 70], [80, 80], [90, 90],
+    [80, 90], [70, 90], [60, 90], [50, 90], [40, 90],
+    [30, 90], [20, 90], [10, 90], [0, 90],
+    [0, 0], [-10, 0], [-20, 0], [-30, 0], [-40, 0],
+    [0, 0], [10, 0], [20, 0]
   ]; // // "x" is Inclination, "y" is Declination
 
   const width = 300;
@@ -29,6 +34,12 @@ const StereoGraph: FC<IGraph> = ({ graphId }) => {
   const unitCount = 18;
   const zeroX = (width / 2);
   const zeroY = (height / 2);
+
+  const data: Array<[number, number]> = directionalData.map((di) => {
+    const xyz = dirToCartesian2D(di[0], di[1], width);
+    // console.log(xyz.x, xyz.y)
+    return [xyz.x, xyz.y];
+  })
 
   // selectableNodes - все точки на графике 
   useEffect(() => {
@@ -78,6 +89,7 @@ const StereoGraph: FC<IGraph> = ({ graphId }) => {
             unit={unit}
             unitCount={unitCount}
             data={data}
+            directionalData={directionalData}
             selectedIndexes={selectedIndexes}
             handleDotClick={handleDotClick}
           />
