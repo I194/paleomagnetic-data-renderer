@@ -42,6 +42,7 @@ const AxesAndData: FC<IAxesAndData> = ({
           graphId={graphId}
           type='y'
           name='W, UP'
+          namePosition={{x: zeroX - 20, y: -10}}
           zero={zeroX}
           length={height}
           unit={unit}

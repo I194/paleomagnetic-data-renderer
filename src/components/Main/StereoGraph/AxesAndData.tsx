@@ -41,19 +41,25 @@ const AxesAndData: FC<IAxesAndData> = ({
           graphId={graphId}
           type='x'
           name='E'
+          mirrorName='W'
+          mirrorNamePosition={{x: -24, y: zeroY + 5}} 
           zero={zeroY}
           length={width}
           unit={unit}
           unitCount={unitCount}
+          hideLine={true}
         />
         <Axis 
           graphId={graphId}
           type='y'
           name='N'
+          mirrorName='S'
+          mirrorNamePosition={{x: zeroX - 4, y: height + 20}} 
           zero={zeroX}
           length={height}
           unit={unit}
           unitCount={unitCount}
+          hideLine={true}
         />
       </g>
       {/* 
