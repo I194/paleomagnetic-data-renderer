@@ -10,6 +10,8 @@ const StereoGraph: FC<IGraph> = ({ graphId }) => {
   // ToDo: 
   // 1. менять viewBox в зависимости от размера группы data (horizontal-data + vertical-data) || STOPPED
   // 2. zoom&pan
+  // 3. починить отображение цвета точек - проблема сейчас в том, что не считывается корректно inc (считывается y)
+  //    то есть вообще надо уже начать работать с нормальной моделью данных, а не с выдуманным массивом [][]
 
   const [selectedIndexes, setSelectedIndexes] = useState<number[]>([]);
   const [selectableNodes, setSelectableNodes] = useState<ChildNode[]>([]);

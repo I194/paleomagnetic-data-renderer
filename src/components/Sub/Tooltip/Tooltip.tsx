@@ -22,7 +22,8 @@ const Tooltip: FC<ITooltip> = ({ position, isVisible, dot,  }) => {
               top: position.top - 24
             }}
           >
-            <span>id: {dot.id}</span>
+            <span>{dot.id}</span>
+            <span>{dot.text}</span>
             <span>x: {dot.x}</span>
             <span>y: {dot.y}</span>
             <span>inc: {dot.inc}</span>
