@@ -10,8 +10,7 @@ interface IAxesAndData {
   height: number;
   unit: number;
   unitCount: number;
-  upData: Array<[number, number]>;
-  downData: Array<[number, number]>;
+  data: Array<[number, number]>;
   selectedIndexes: Array<number>;
   handleDotClick: (index: number) => void;
 }
@@ -19,7 +18,7 @@ interface IAxesAndData {
 const AxesAndData: FC<IAxesAndData> = ({ 
   graphId, graphAreaMargin,
   zeroX, zeroY, width, height, unit, unitCount,
-  upData, downData,
+  data,
   selectedIndexes,
   handleDotClick
 }) => {
@@ -73,19 +72,13 @@ const AxesAndData: FC<IAxesAndData> = ({
       <g id={`${graphId}-data`}>
         <Data 
           graphId={graphId}
-          type='u'
-          data={upData}
+          type='all'
+          data={data}
           selectedIndexes={selectedIndexes}
           handleDotClick={handleDotClick}
           dotFillColor='black'
-        />
-        <Data 
-          graphId={graphId}
-          type='d'
-          data={downData}
-          selectedIndexes={selectedIndexes}
-          handleDotClick={handleDotClick}
-          dotFillColor='white'
+          differentColors={true}
+          colorsType="stereo"
         />
       </g>
     </g>

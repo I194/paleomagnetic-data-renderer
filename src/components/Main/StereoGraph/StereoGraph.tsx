@@ -13,12 +13,10 @@ const StereoGraph: FC<IGraph> = ({ graphId }) => {
   const [selectedIndexes, setSelectedIndexes] = useState<number[]>([]);
   const [selectableNodes, setSelectableNodes] = useState<ChildNode[]>([]);
 
-  const horizontalProjectionData: Array<[number, number]> = [
-    [20, 20], [25, 70], [50, 40], [39, 72], [110, 119], [118, 129], [134, 141], [150, 150]
-  ]; // "x" is Inclination [-90, 90], "y" is Declination [0, 360]
-  const verticalProjectionData: Array<[number, number]> = [
-    [20, 170], [25, 190], [50, 210], [39, 132], [110, 158], [118, 169], [134, 149], [150, 150]
-  ]; // "x" is Inclination [-90, 90], "y" is Declination [0, 360]
+  const data: Array<[number, number]> = [
+    [20, 20], [25, 70], [50, 40], [39, 72], [110, 119], [118, 129], [134, 141], [150, 150],
+    [-20, 170], [-25, 190], [-50, 210], [-39, 132], [-110, 158], [-118, 169], [-134, 149], [-150, 150],
+  ]; // // "x" is Inclination, "y" is Declination
 
   const width = 300;
   const height = 300;
@@ -34,10 +32,9 @@ const StereoGraph: FC<IGraph> = ({ graphId }) => {
 
   // selectableNodes - все точки на графике 
   useEffect(() => {
-    const elementsContainerU = document.getElementById(`${graphId}-u-dots`);
-    const elementsContainerD = document.getElementById(`${graphId}-d-dots`);
-    if (elementsContainerU && elementsContainerD) {
-      const nodes = Array.from(elementsContainerU.childNodes).concat(Array.from(elementsContainerD.childNodes));
+    const elementsContainer = document.getElementById(`${graphId}-all-dots`);
+    if (elementsContainer) {
+      const nodes = Array.from(elementsContainer.childNodes);
       setSelectableNodes(nodes);
     }
   }, [graphId])
@@ -80,8 +77,7 @@ const StereoGraph: FC<IGraph> = ({ graphId }) => {
             height={height}
             unit={unit}
             unitCount={unitCount}
-            upData={horizontalProjectionData}
-            downData={verticalProjectionData}
+            data={data}
             selectedIndexes={selectedIndexes}
             handleDotClick={handleDotClick}
           />

@@ -9,6 +9,8 @@ interface IData {
   selectedIndexes: Array<number>;
   handleDotClick: (index: number) => void;
   dotFillColor: string;
+  differentColors?: boolean; 
+  colorsType?: 'stereo' | 'colouredStereo';
 }
 
 const Data: FC<IData> = ({
@@ -17,9 +19,17 @@ const Data: FC<IData> = ({
   data,
   selectedIndexes,
   handleDotClick,
-  dotFillColor
+  dotFillColor,
+  differentColors,
+  colorsType,
  }) => {
-  console.log(selectedIndexes);
+  
+  const colorByType = (type: 'stereo' | 'colouredStereo', xy: [number, number], index: number) => {
+    if (type === 'stereo') return xy[0] > 0 ? 'black' : 'white';
+    if (type === 'colouredStereo') return xy[0] > 0 ? 'red' : 'blue';
+    return 'black';
+  }
+
   return (
     <g id={`${graphId}-${type}-data`}>
       <path 
@@ -37,7 +47,11 @@ const Data: FC<IData> = ({
               id={`${graphId}-${type}-dot-${index}`} 
               key={index} 
               selected={selectedIndexes.includes(index)}
-              fillColor={dotFillColor}
+              fillColor={
+                differentColors && colorsType
+                  ? colorByType(colorsType, xy, index)
+                  : dotFillColor
+              }
               strokeColor="black"
               onClick={handleDotClick}
             />
