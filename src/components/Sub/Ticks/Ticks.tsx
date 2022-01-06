@@ -38,6 +38,7 @@ const Ticks: FC<ITicks> = ({
   for (let i = 0; i <= count; i++) {
     positionsAlongAxis.push(start + interval * i);
   }
+
   return (
     <g id={`ticks-${axis}`}>
       {
@@ -47,8 +48,9 @@ const Ticks: FC<ITicks> = ({
               {
                 labels 
                   ? <text
-                      x={axis === 'x' ? posAA - 5: zero + positionsAcrossAxis['outer'].x1 * 5}
+                      x={axis === 'x' ? posAA : zero + positionsAcrossAxis['outer'].x1 * 2}
                       y={axis === 'y' ? posAA + 5 : zero + positionsAcrossAxis['outer'].y2 * 4}
+                      text-anchor={axis === 'y' ? 'end' : 'middle'}
                     > 
                       {labels[index]}
                     </text>
