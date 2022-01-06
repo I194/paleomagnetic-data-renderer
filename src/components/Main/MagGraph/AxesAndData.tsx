@@ -37,7 +37,7 @@ const AxesAndData: FC<IAxesAndData> = ({
     labelsX.push((i * 100).toString());
   }
 
-  for (let i = 0; i <= unitCountY; i++) {
+  for (let i = unitCountY; i >= 0; i--) {
     labelsY.push((i / 10).toString());
   }
 

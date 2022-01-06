@@ -98,10 +98,6 @@ const StereoGraph: FC<IGraph> = ({ graphId }) => {
             viewHeight={viewHeight} viewWidth={viewWidth}
             disabled={true}
           />
-          <Unit 
-            label={`10 degrees`} 
-            viewHeight={viewHeight} viewWidth={viewWidth}
-          />
         </g>
       </SelectableGraph>
     </>
