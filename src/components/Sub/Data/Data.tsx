@@ -26,9 +26,15 @@ const Data: FC<IData> = ({
   colorsType,
  }) => {
   
-  const colorByType = (type: 'stereo' | 'colouredStereo', xy: [number, number], index: number) => {
-    if (type === 'stereo') return xy[0] > 0 ? 'black' : 'white';
-    if (type === 'colouredStereo') return xy[0] > 0 ? 'red' : 'blue';
+  const colorByType = (
+    type: 'stereo' | 'colouredStereo',
+    xy: [number, number],
+    inc: number,
+    dec: number,
+    index: number
+  ) => {
+    if (type === 'stereo') return inc >= 0 ? 'black' : 'white';
+    if (type === 'colouredStereo') return inc >= 0 ? 'red' : 'blue';
     return 'black';
   }
 
@@ -55,7 +61,13 @@ const Data: FC<IData> = ({
               selected={selectedIndexes.includes(index)}
               fillColor={
                 differentColors && colorsType
-                  ? colorByType(colorsType, xy, index)
+                  ? colorByType(
+                      colorsType, 
+                      xy, 
+                      directionalData ? directionalData[index][0] : 1, 
+                      directionalData ? directionalData[index][1] : 1,
+                      index
+                    )
                   : dotFillColor
               }
               strokeColor="black"

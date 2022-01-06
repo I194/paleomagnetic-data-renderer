@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './App.module.scss';
 import { handleSave } from '../../utils/export';
-import  { ZijdGraph, StereoGraph } from '../Main/index';
+import  { ZijdGraph, StereoGraph, MagGraph } from '../Main/index';
 
 export interface IGraph {
   graphId: string;
@@ -13,6 +13,7 @@ function App() {
       <ZijdGraph graphId={'zijd'}/>
       <button id='SVGsave' onClick={handleSave} style={{marginTop: '24px'}}>SAVE</button>
       <StereoGraph graphId={'stereo'}/>
+      <MagGraph graphId={'mag'} />
     </div>
   );
 }

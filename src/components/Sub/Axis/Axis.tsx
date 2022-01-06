@@ -4,6 +4,7 @@ import { Ticks } from ".."
 interface IAxis {
   graphId: string;
   type: 'x' | 'y';
+  offset?: {x: number, y: number};
   name: string;
   namePosition?: {x: number, y: number};
   mirrorName?: string;
@@ -14,11 +15,19 @@ interface IAxis {
   unitCount: number;
   hideLine?: boolean;
   hideTicks?: boolean;
+  tickPosition: 'inner' | 'outer' | 'both';
+  grid?: {
+    length: number;
+    width: number;
+    color: string;
+    dashArray: Array<number>;
+  }
 }
 
 const Axis: FC<IAxis> = ({ 
   graphId, 
   type,
+  offset,
   name,
   namePosition,
   mirrorName,
@@ -28,7 +37,9 @@ const Axis: FC<IAxis> = ({
   unit,
   unitCount,
   hideLine,
-  hideTicks
+  hideTicks,
+  tickPosition,
+  grid,
 }) => {
 
   const axisPos = {
@@ -59,7 +70,14 @@ const Axis: FC<IAxis> = ({
   }
 
   return (
-    <g id={`${graphId}-${type}-axis`}>
+    <g 
+      id={`${graphId}-${type}-axis`}
+      transform={
+        `
+          translate(${offset?.x || 0}, ${offset?.y || 0})
+        `
+      }
+    >
       {
         hideLine 
           ? null
@@ -82,6 +100,8 @@ const Axis: FC<IAxis> = ({
               zero={zero} 
               interval={unit} 
               count={unitCount}
+              position={tickPosition}
+              grid={grid}
             />
       }
       <text 

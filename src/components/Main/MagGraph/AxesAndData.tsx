@@ -11,7 +11,7 @@ interface IAxesAndData {
   unit: number;
   unitCount: number;
   data: Array<[number, number]>;
-  directionalData: Array<[number, number]>;
+  maxMAG: number;
   selectedIndexes: Array<number>;
   handleDotClick: (index: number) => void;
 }
@@ -19,7 +19,7 @@ interface IAxesAndData {
 const AxesAndData: FC<IAxesAndData> = ({ 
   graphId, graphAreaMargin,
   zeroX, zeroY, width, height, unit, unitCount,
-  data, directionalData,
+  data, maxMAG,
   selectedIndexes,
   handleDotClick
 }) => {
@@ -29,11 +29,12 @@ const AxesAndData: FC<IAxesAndData> = ({
       transform={`translate(${graphAreaMargin}, ${graphAreaMargin})`}
     >
       <g id={`${graphId}-axes`}>
-        <circle 
-          id='stereo-circle-axis'
-          cx={zeroX} 
-          cy={zeroY} 
-          r={width/2}
+        <rect 
+          id='mag-rect-axis'
+          x={0} 
+          y={0} 
+          width={width}
+          height={height}
           fill="none"
           stroke="black"
           strokeWidth={1}
@@ -41,28 +42,33 @@ const AxesAndData: FC<IAxesAndData> = ({
         <Axis 
           graphId={graphId}
           type='x'
-          name='E'
-          mirrorName='W'
+          name='Step'
           mirrorNamePosition={{x: -24, y: zeroY + 5}} 
           zero={zeroY}
           length={width}
           unit={unit}
           unitCount={unitCount}
           hideLine={true}
-          tickPosition="both"
+          tickPosition="outer"
         />
         <Axis 
           graphId={graphId}
           type='y'
-          name='N'
-          mirrorName='S'
-          mirrorNamePosition={{x: zeroX - 4.5, y: height + 20}} 
+          name='M/Mmax'
+          mirrorName={`Mmax = ${maxMAG} A/m`}
+          mirrorNamePosition={{x: zeroX + 100, y: -10}} 
           zero={zeroX}
           length={height}
           unit={unit}
           unitCount={unitCount}
           hideLine={true}
-          tickPosition="both"
+          tickPosition="inner"
+          grid={{
+            length: width,
+            width: 1,
+            color: 'black',
+            dashArray: [5, 4]
+          }}
         />
       </g>
       {/* 
@@ -74,17 +80,11 @@ const AxesAndData: FC<IAxesAndData> = ({
       */}
       <g 
         id={`${graphId}-data`}
-        transform={
-          `
-            translate(${150}, ${150})
-          `
-        }
       >
         <Data 
           graphId={graphId}
           type='all'
           data={data}
-          directionalData={directionalData}
           selectedIndexes={selectedIndexes}
           handleDotClick={handleDotClick}
           dotFillColor='black'

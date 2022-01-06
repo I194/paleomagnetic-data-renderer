@@ -37,6 +37,7 @@ const AxesAndData: FC<IAxesAndData> = ({
           length={width}
           unit={unit}
           unitCount={unitCount}
+          tickPosition="both"
         />
         <Axis 
           graphId={graphId}
@@ -47,6 +48,7 @@ const AxesAndData: FC<IAxesAndData> = ({
           length={height}
           unit={unit}
           unitCount={unitCount}
+          tickPosition="both"
         />
       </g>
       {/* 

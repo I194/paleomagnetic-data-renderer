@@ -1,11 +1,10 @@
 import React, { FC, useEffect, useState } from "react";
-import { dirToCartesian2D } from "../../../utils/dirToCartesian";
 import { IGraph } from "../../App/App";
 import { SelectableGraph, GraphSymbols, Unit} from "../../Sub";
 import AxesAndData from "./AxesAndData";
-import styles from "./ZijdGraph.module.scss";
+import styles from "./MagGraph.module.scss";
 
-const StereoGraph: FC<IGraph> = ({ graphId }) => {
+const MagGraph: FC<IGraph> = ({ graphId }) => {
 
   // ToDo: 
   // 1. менять viewBox в зависимости от размера группы data (horizontal-data + vertical-data) || STOPPED
@@ -16,11 +15,19 @@ const StereoGraph: FC<IGraph> = ({ graphId }) => {
   const [selectedIndexes, setSelectedIndexes] = useState<number[]>([]);
   const [selectableNodes, setSelectableNodes] = useState<ChildNode[]>([]);
 
-  const directionalData: Array<[number, number]> = [
-    [50, 0], [10, 10], [20, 20], [30, 30], [40, 40], [50, 50], [60, 60], [70, 70], [80, 80], [90, 90],
-    [80, 270], [70, 270], [60, 270], [50, 270], [40, 270], [30, 270], [20, 270], [10, 270], [0, 270],
-    [0, 0], [-10, 0], [-20, 0], [-30, 0], [-40, 0],
-  ]; // // "x" is Inclination, "y" is Declination
+  const demagnetizationType = 'T';
+
+  const mag: Array<number> = [
+    100, 90, 80, 60, 30, 35, 33, 30, 20, 10, 0
+  ];
+
+  const stepValues: Array<number> = [
+    0, 100, 250, 300, 350, 400, 450, 500, 540, 570, 590
+  ];
+
+  const maxMag = Math.max(...mag);
+  const maxStep = Math.ceil(Math.max(...stepValues) / 100) * 100;
+  console.log(maxStep)
 
   const width = 300;
   const height = 300;
@@ -29,16 +36,17 @@ const StereoGraph: FC<IGraph> = ({ graphId }) => {
   const viewWidth = width + graphAreaMargin * 2;
   const viewHeight = height + graphAreaMargin * 2;
 
-  const unit = (width / 18);
-  const unitCount = 18;
-  const zeroX = (width / 2);
-  const zeroY = (height / 2);
-
-  const data: Array<[number, number]> = directionalData.map((di) => {
-    const xyz = dirToCartesian2D(di[0], di[1] - 90, width);
-    // console.log(xyz.x, xyz.y)
-    return [xyz.x, xyz.y];
-  })
+  const unit = (width / 10);
+  const unitCount = 10;
+  const zeroX = (0);
+  const zeroY = (height);
+  
+  const data: Array<[number, number]> = stepValues.map((step, index) => {
+    const normalizedMAG = mag[index] / maxMag;
+    const x = step * (width / maxStep);
+    const y = (1 - normalizedMAG) * height;
+    return [x, y];
+  }); // "x" is stepValue, "y" is normalizedMAG
 
   // selectableNodes - все точки на графике 
   useEffect(() => {
@@ -88,7 +96,7 @@ const StereoGraph: FC<IGraph> = ({ graphId }) => {
             unit={unit}
             unitCount={unitCount}
             data={data}
-            directionalData={directionalData}
+            maxMAG={maxMag}
             selectedIndexes={selectedIndexes}
             handleDotClick={handleDotClick}
           />
@@ -108,4 +116,4 @@ const StereoGraph: FC<IGraph> = ({ graphId }) => {
   )
 }
 
-export default StereoGraph;
+export default MagGraph;
