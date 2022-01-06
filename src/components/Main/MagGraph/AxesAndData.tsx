@@ -8,21 +8,37 @@ interface IAxesAndData {
   zeroY: number;
   width: number;
   height: number;
-  unit: number;
-  unitCount: number;
+  unitX: number;
+  unitY: number;
+  unitCountX: number;
+  unitCountY: number;
   data: Array<[number, number]>;
   maxMAG: number;
+  maxStep: number;
   selectedIndexes: Array<number>;
   handleDotClick: (index: number) => void;
 }
 
 const AxesAndData: FC<IAxesAndData> = ({ 
   graphId, graphAreaMargin,
-  zeroX, zeroY, width, height, unit, unitCount,
+  zeroX, zeroY, width, height,
+  unitX, unitY, unitCountX, unitCountY,
   data, maxMAG,
   selectedIndexes,
   handleDotClick
 }) => {
+
+  const labelsX = [];
+  const labelsY = [];
+
+  for (let i = 0; i <= unitCountX; i++) {
+    labelsX.push((i * 100).toString());
+  }
+
+  for (let i = 0; i <= unitCountY; i++) {
+    labelsY.push((i / 10).toString());
+  }
+
   return (
     <g 
       id={`${graphId}-axes-and-data`}
@@ -46,10 +62,11 @@ const AxesAndData: FC<IAxesAndData> = ({
           mirrorNamePosition={{x: -24, y: zeroY + 5}} 
           zero={zeroY}
           length={width}
-          unit={unit}
-          unitCount={unitCount}
+          unit={unitX}
+          unitCount={unitCountX}
           hideLine={true}
           tickPosition="outer"
+          labels={labelsX}
         />
         <Axis 
           graphId={graphId}
@@ -59,10 +76,11 @@ const AxesAndData: FC<IAxesAndData> = ({
           mirrorNamePosition={{x: zeroX + 100, y: -10}} 
           zero={zeroX}
           length={height}
-          unit={unit}
-          unitCount={unitCount}
+          unit={unitY}
+          unitCount={unitCountY}
           hideLine={true}
           tickPosition="inner"
+          labels={labelsY}
           grid={{
             length: width,
             width: 1,

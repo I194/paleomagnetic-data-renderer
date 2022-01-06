@@ -16,6 +16,7 @@ interface IAxis {
   hideLine?: boolean;
   hideTicks?: boolean;
   tickPosition: 'inner' | 'outer' | 'both';
+  labels?: Array<string>;
   grid?: {
     length: number;
     width: number;
@@ -39,6 +40,7 @@ const Axis: FC<IAxis> = ({
   hideLine,
   hideTicks,
   tickPosition,
+  labels,
   grid,
 }) => {
 
@@ -101,6 +103,7 @@ const Axis: FC<IAxis> = ({
               interval={unit} 
               count={unitCount}
               position={tickPosition}
+              labels={labels}
               grid={grid}
             />
       }

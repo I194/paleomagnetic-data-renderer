@@ -8,6 +8,7 @@ interface ITicks {
   interval: number;
   count: number;
   position: 'inner' | 'outer' | 'both';
+  labels?: Array<string>;
   grid?: {
     length: number;
     width: number;
@@ -23,6 +24,7 @@ const Ticks: FC<ITicks> = ({
   interval, 
   count,
   position,
+  labels,
   grid,
 }) => {
 
@@ -39,23 +41,33 @@ const Ticks: FC<ITicks> = ({
   return (
     <g id={`ticks-${axis}`}>
       {
-        positionsAlongAxis.map((posAA, iter) => {
+        positionsAlongAxis.map((posAA, index) => {
           return (
-              <>
-                <line
-                id={`tick-x${iter}`}
+            <>
+              {
+                labels 
+                  ? <text
+                      x={axis === 'x' ? posAA - 5: zero + positionsAcrossAxis['outer'].x1 * 5}
+                      y={axis === 'y' ? posAA + 5 : zero + positionsAcrossAxis['outer'].y2 * 4}
+                    > 
+                      {labels[index]}
+                    </text>
+                  : null
+              }
+              <line
+                id={`tick-x${index}`}
                 x1={axis === 'x' ? posAA : zero + positionsAcrossAxis[position].x1}
                 y1={axis === 'y' ? posAA : zero + positionsAcrossAxis[position].y1}
                 x2={axis === 'x' ? posAA : zero + positionsAcrossAxis[position].x2}
                 y2={axis === 'y' ? posAA : zero + positionsAcrossAxis[position].y2}
                 stroke="black"
                 strokeWidth={1}
-                key={iter}
+                key={index}
               />
               {
                 grid 
                   ? <line
-                      id={`grid-x${iter}`}
+                      id={`grid-x${index}`}
                       x1={axis === 'x' ? posAA : zero}
                       y1={axis === 'y' ? posAA : zero}
                       x2={axis === 'x' ? posAA : zero + grid.length}
@@ -63,7 +75,7 @@ const Ticks: FC<ITicks> = ({
                       stroke={grid.color}
                       strokeWidth={grid.width}
                       strokeDasharray={grid.dashArray.join(' ')}
-                      key={`${iter}-gridline`}
+                      key={`${index}-gridline`}
                     />
                   : null
               }

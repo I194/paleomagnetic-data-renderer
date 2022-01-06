@@ -25,10 +25,6 @@ const MagGraph: FC<IGraph> = ({ graphId }) => {
     0, 100, 250, 300, 350, 400, 450, 500, 540, 570, 590
   ];
 
-  const maxMag = Math.max(...mag);
-  const maxStep = Math.ceil(Math.max(...stepValues) / 100) * 100;
-  console.log(maxStep)
-
   const width = 300;
   const height = 300;
 
@@ -36,10 +32,15 @@ const MagGraph: FC<IGraph> = ({ graphId }) => {
   const viewWidth = width + graphAreaMargin * 2;
   const viewHeight = height + graphAreaMargin * 2;
 
-  const unit = (width / 10);
-  const unitCount = 10;
+  const unitCountX = Math.ceil(Math.max(...stepValues) / 100);
+  const unitCountY = 10;
+  const unitX = (width / unitCountX);
+  const unitY = (height / unitCountY);
   const zeroX = (0);
   const zeroY = (height);
+  
+  const maxMag = Math.max(...mag);
+  const maxStep = unitCountX * 100;
   
   const data: Array<[number, number]> = stepValues.map((step, index) => {
     const normalizedMAG = mag[index] / maxMag;
@@ -93,22 +94,15 @@ const MagGraph: FC<IGraph> = ({ graphId }) => {
             zeroY={zeroY}
             width={width}
             height={height}
-            unit={unit}
-            unitCount={unitCount}
+            unitX={unitX}
+            unitY={unitY}
+            unitCountX={unitCountX}
+            unitCountY={unitCountY}
             data={data}
             maxMAG={maxMag}
+            maxStep={maxStep}
             selectedIndexes={selectedIndexes}
             handleDotClick={handleDotClick}
-          />
-          <GraphSymbols 
-            title1="Down" id1={`${graphId}-d-data`} 
-            title2="Up" id2={`${graphId}-u-data`}
-            viewHeight={viewHeight} viewWidth={viewWidth}
-            disabled={true}
-          />
-          <Unit 
-            label={`10 degrees`} 
-            viewHeight={viewHeight} viewWidth={viewWidth}
           />
         </g>
       </SelectableGraph>

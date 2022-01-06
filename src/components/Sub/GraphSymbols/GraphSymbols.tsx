@@ -68,10 +68,10 @@ const SymbolRow: FC<ISymbolRow> = ({title, sourceId, disabled, fill, x, y}) => {
 }
 
 interface IGraphSymbols {
-  title1: string;
-  id1: string;
-  title2: string;
-  id2: string;
+  title1?: string;
+  id1?: string;
+  title2?: string;
+  id2?: string;
   disabled?: boolean;
   viewWidth: number;
   viewHeight: number;
@@ -91,8 +91,14 @@ const GraphSymbols: FC<IGraphSymbols> = ({
       id='graph-symbols' 
       transform={`translate(${20}, ${viewHeight - 45})`}
     >
-      <SymbolRow title={title1} sourceId={id1} fill='black' x={10} y={10} disabled={disabled}/>
-      <SymbolRow title={title2} sourceId={id2} fill='white' x={10} y={30} disabled={disabled}/>
+      {
+        title1 && id1 &&
+        <SymbolRow title={title1} sourceId={id1} fill='black' x={10} y={10} disabled={disabled}/> 
+      }
+      {
+        title2 && id2 &&
+        <SymbolRow title={title2} sourceId={id2} fill='white' x={10} y={30} disabled={disabled}/>
+      }
     </g>
   )
 }
