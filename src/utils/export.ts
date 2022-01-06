@@ -49,5 +49,5 @@ var exportSVG = function(svg: any) {
 
 export const handleSave = () => {
   console.log(document.getElementById('zijd-graph'))
-	exportSVG(document.getElementById('stereo-graph'));
+	exportSVG(document.getElementById('mag-graph'));
 }

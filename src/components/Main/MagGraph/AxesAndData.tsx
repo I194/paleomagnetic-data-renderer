@@ -15,6 +15,7 @@ interface IAxesAndData {
   data: Array<[number, number]>;
   maxMAG: number;
   maxStep: number;
+  demagnetizationType: string;
   selectedIndexes: Array<number>;
   handleDotClick: (index: number) => void;
 }
@@ -23,7 +24,8 @@ const AxesAndData: FC<IAxesAndData> = ({
   graphId, graphAreaMargin,
   zeroX, zeroY, width, height,
   unitX, unitY, unitCountX, unitCountY,
-  data, maxMAG,
+  data, maxMAG, maxStep,
+  demagnetizationType,
   selectedIndexes,
   handleDotClick
 }) => {
@@ -38,6 +40,8 @@ const AxesAndData: FC<IAxesAndData> = ({
   for (let i = 0; i <= unitCountY; i++) {
     labelsY.push((i / 10).toString());
   }
+
+  const axisNameX = demagnetizationType === 'T' ? `°C` : 'nT';
 
   return (
     <g 
@@ -58,7 +62,7 @@ const AxesAndData: FC<IAxesAndData> = ({
         <Axis 
           graphId={graphId}
           type='x'
-          name='Step'
+          name={axisNameX}
           mirrorNamePosition={{x: -24, y: zeroY + 5}} 
           zero={zeroY}
           length={width}
@@ -73,7 +77,7 @@ const AxesAndData: FC<IAxesAndData> = ({
           type='y'
           name='M/Mmax'
           mirrorName={`Mmax = ${maxMAG} A/m`}
-          mirrorNamePosition={{x: zeroX + 100, y: -10}} 
+          mirrorNamePosition={{x: zeroX + 80, y: -10}} 
           zero={zeroX}
           length={height}
           unit={unitY}

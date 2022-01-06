@@ -101,6 +101,7 @@ const MagGraph: FC<IGraph> = ({ graphId }) => {
             data={data}
             maxMAG={maxMag}
             maxStep={maxStep}
+            demagnetizationType={demagnetizationType}
             selectedIndexes={selectedIndexes}
             handleDotClick={handleDotClick}
           />
